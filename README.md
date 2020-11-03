@@ -3,6 +3,8 @@
 #### 介绍
 Music player with a fancy ui, powered by bass.dll
 
+![image](images/preview1.png)
+
 #### 软件架构
 
 使用GDI绘制界面，使用Bass.dll作为引擎
