@@ -82,6 +82,7 @@
     <Compile Include="lib\GuassionBlur.cs" />
     <Compile Include="lib\IconMaker.cs" />
     <Compile Include="lib\MyGdiFramework.cs" />
+    <Compile Include="lib\SizedStack.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

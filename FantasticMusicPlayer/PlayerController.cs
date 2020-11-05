@@ -1,4 +1,5 @@
 ﻿using FantasticMusicPlayer.dbo.Model;
+using FantasticMusicPlayer.lib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,17 @@ namespace FantasticMusicPlayer
         Random rnd = new Random();
         void prev() {
             if (Shuffe) {
-                CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
+                shuffeForwardLog.push(CurrentPlaying);
+
+                SongEntry prev = null;
+                if (shuffeBackLog.pop(out prev))
+                {
+                    CurrentPlaying = prev;
+                }
+                else
+                {
+                    CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
+                }
                 changeSong(CurrentPlaying);
                 return;
             }
@@ -45,7 +56,16 @@ namespace FantasticMusicPlayer
         void next() {
             if (Shuffe)
             {
-                CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
+                shuffeBackLog.push(CurrentPlaying);
+                SongEntry next = null;
+                if (shuffeForwardLog.pop(out next))
+                {
+                    CurrentPlaying = next;
+                }
+                else
+                {
+                    CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
+                }
                 changeSong(CurrentPlaying);
                 return;
             }
@@ -73,8 +93,20 @@ namespace FantasticMusicPlayer
 
         private bool HasSong = false;
 
+        SizedStack<SongEntry> shuffeBackLog = new SizedStack<SongEntry>(30);
+        SizedStack<SongEntry> shuffeForwardLog = new SizedStack<SongEntry>(30);
+
         public int LoopMode { get; set; } = 0;
-        public bool Shuffe { get; set; } = false;
+
+        private bool _shuffe = false;
+        public bool Shuffe { get=>_shuffe; set {
+                _shuffe = value;
+                if (value) {
+                    shuffeBackLog.Clear();
+                    shuffeForwardLog.Clear();
+                }
+            } 
+        }
 
         public PlayerController(IPlayListProvider playlistProvider) {
             this.PlayListProvider = playlistProvider;
@@ -92,6 +124,9 @@ namespace FantasticMusicPlayer
         }
 
         public void ImReady() {
+            if (_shuffe) { 
+                
+            }
             changeSong(CurrentPlaying);
         }
 

@@ -94,7 +94,7 @@
             // 
             // lblTitle
             // 
-            this.lblTitle.Font = new System.Drawing.Font("微软雅黑 Light", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblTitle.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(49, 2);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(618, 24);
@@ -104,8 +104,8 @@
             // 
             // lblArtsit
             // 
-            this.lblArtsit.Font = new System.Drawing.Font("微软雅黑 Light", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblArtsit.Location = new System.Drawing.Point(49, 27);
+            this.lblArtsit.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblArtsit.Location = new System.Drawing.Point(51, 27);
             this.lblArtsit.Name = "lblArtsit";
             this.lblArtsit.Size = new System.Drawing.Size(618, 17);
             this.lblArtsit.TabIndex = 3;
@@ -252,9 +252,9 @@
             // lblCurrentTime
             // 
             this.lblCurrentTime.BackColor = System.Drawing.Color.Transparent;
-            this.lblCurrentTime.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCurrentTime.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCurrentTime.ForeColor = System.Drawing.Color.White;
-            this.lblCurrentTime.Location = new System.Drawing.Point(234, 57);
+            this.lblCurrentTime.Location = new System.Drawing.Point(234, 55);
             this.lblCurrentTime.Name = "lblCurrentTime";
             this.lblCurrentTime.Size = new System.Drawing.Size(85, 29);
             this.lblCurrentTime.TabIndex = 3;
@@ -343,9 +343,9 @@
             // lblTotalTime
             // 
             this.lblTotalTime.BackColor = System.Drawing.Color.Transparent;
-            this.lblTotalTime.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalTime.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotalTime.ForeColor = System.Drawing.Color.White;
-            this.lblTotalTime.Location = new System.Drawing.Point(448, 57);
+            this.lblTotalTime.Location = new System.Drawing.Point(448, 55);
             this.lblTotalTime.Name = "lblTotalTime";
             this.lblTotalTime.Size = new System.Drawing.Size(85, 29);
             this.lblTotalTime.TabIndex = 3;

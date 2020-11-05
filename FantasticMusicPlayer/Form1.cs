@@ -57,6 +57,16 @@ namespace FantasticMusicPlayer
         }
 
         GaussianBlur blurer = new GaussianBlur(48);
+
+        public Bitmap copyForGuassianBlur(Image img) {
+            Bitmap bmp = new Bitmap(100, 100);
+            using (Graphics g = Graphics.FromImage(bmp)) {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.DrawImage(img, 0, 0, 100, 100);
+            }
+            return bmp;
+        }
+
         private void Player_CoverAvailable(object sender, AlbumEventArgs e)
         {
             Bitmap bmp = new Bitmap(locMask.Width, locMask.Height);
@@ -79,7 +89,7 @@ namespace FantasticMusicPlayer
 
             if (!e.Fallback)
             {
-                currentBackground = new Bitmap(blurer.ProcessImage(new Bitmap(e.cover, 100, 100)), this.Width + 20, this.Height + 20);
+                currentBackground = new Bitmap(blurer.ProcessImage(copyForGuassianBlur(e.cover)), this.Width + 20, this.Height + 20);
 
             }
             else
@@ -190,7 +200,7 @@ namespace FantasticMusicPlayer
             listLayer = new GraphicsLayer(this, tblList) { Text = "列表层" };
 
             bottomControlLayer = new GraphicsLayer(this, tblBottomControl) { Text = "底部控制器" };
-            topTextLayer = new GraphicsLayer(this, tblTopInfo) { Text = "顶部文本" };
+            topTextLayer = new GraphicsLayer(this, tblTopInfo) { Text = "SpyXX好玩吗" };
             discDisplayBackLayer = new GraphicsLayer(this, locGlowing) { Text = "唱片发光特效层" };
             discDisplayLayer = new GraphicsLayer(this, locMask) { Text = "唱片层" };
             for (int i = 0; i < layers.Count; i++)
@@ -1245,7 +1255,7 @@ namespace FantasticMusicPlayer
             gdi = new GdiSystem(this);
             Win32.SetWindowLong(Handle, Win32.GWL_EXSTYLE, Win32.GetWindowLong(Handle, Win32.GWL_EXSTYLE) | Win32.WS_EX_TRANSPARENT);
             gdi.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            gdi.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            gdi.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
         }
 
         internal Graphics g => gdi.Graphics;
