@@ -10,7 +10,7 @@ namespace FantasticMusicPlayer
     static class Program
     {
 
-        public const string appid = "com.zyfdroid.fantasymusicplayer";
+        public const string appid = "com.zyfdroid.fantasymusicplayer_v100000000";
 
         public static void checkLibrary() {
             String rootpath = Path.Combine(Path.GetTempPath(), appid, "libs");
@@ -19,6 +19,7 @@ namespace FantasticMusicPlayer
             makeFileExists(Properties.Resources.bassflac, Path.Combine(pluginpath, "bass_flac.dll"));
             makeFileExists(Properties.Resources.bass_aac, Path.Combine(pluginpath, "bass_aac.dll"));
             makeFileExists(Properties.Resources.bass_ape, Path.Combine(pluginpath, "bass_ape.dll"));
+            makeFileExists(Properties.Resources.bass_fx, Path.Combine(pluginpath, "bass_fx.dll"));
 
             if (Un4seen.Bass.Bass.LoadMe(Path.Combine(rootpath)))
             {
@@ -28,6 +29,15 @@ namespace FantasticMusicPlayer
             else {
                 Console.WriteLine(Un4seen.Bass.Bass.BASS_ErrorGetCode());
             }
+            if (Un4seen.Bass.AddOn.Fx.BassFx.LoadMe(Path.Combine(pluginpath)))
+            {   
+            }
+            else
+            {
+                Console.WriteLine(Un4seen.Bass.Bass.BASS_ErrorGetCode());
+            }
+
+
         }
 
         public static void makeFileExists(byte[] data,String filename) {

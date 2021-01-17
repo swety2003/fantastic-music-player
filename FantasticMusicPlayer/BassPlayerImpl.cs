@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
+using Un4seen.Bass.AddOn.Fx;
 using Un4seen.Bass.AddOn.Tags;
 using static Un4seen.Bass.Bass;
 
@@ -41,6 +42,13 @@ namespace FantasticMusicPlayer
                     Pause();
                 }
             }
+        }
+
+        private bool _bassboosted = false;
+        public bool BassBoost { get => _bassboosted; set {
+                _bassboosted = value;
+                applyFxStatus();
+            } 
         }
 
         public event EventHandler<EventArgs> Stopped;
@@ -130,9 +138,68 @@ namespace FantasticMusicPlayer
                 Stopped?.Invoke(this, EventArgs.Empty);
                 return;
             };
+
+            initFx();
+            applyFxStatus();
             BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
             loading = false;
             updateTimer.Start();
+        }
+
+
+        int fx31param = 0;
+        int fx63param = 0;
+        int fx125param = 0;
+        int fxgainparam = 0;
+
+        void initFx() {
+            fx31param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
+            fx63param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
+            fx125param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 0);
+            fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+            BASS_BFX_PEAKEQ param0 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_PEAKEQ param1 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_PEAKEQ param2 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+            param0.fGain = 0;
+            param0.fCenter = 31;
+            param0.fBandwidth = 1;
+
+            Bass.BASS_FXSetParameters(fx31param, param0);
+            param1.fGain = 0;
+            param1.fCenter = 63;
+            param1.fBandwidth=1;
+            Bass.BASS_FXSetParameters(fx63param, param1);
+            param2.fGain = 0;
+            param2.fCenter = 125;
+            param2.fBandwidth = 1;
+            Bass.BASS_FXSetParameters(fx125param, param2);
+            param3.fGain = 1f;
+            Bass.BASS_FXSetParameters(fxgainparam, param3);
+
+        }
+
+        void applyFxStatus()
+        {
+            BASS_BFX_PEAKEQ param0 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_PEAKEQ param1 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_PEAKEQ param2 = new BASS_BFX_PEAKEQ();
+            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+            Bass.BASS_FXGetParameters(fx31param, param0);
+            Bass.BASS_FXGetParameters(fx63param, param1);
+            Bass.BASS_FXGetParameters(fx125param, param2);
+            Bass.BASS_FXGetParameters(fxgainparam,param3);
+
+            param0.fGain = _bassboosted ? 7 : 0;
+            param1.fGain = _bassboosted ? 7 : 0;
+            param2.fGain = _bassboosted ? 5f : 0;
+            param3.fGain = _bassboosted ? 0.44f : 0.75f;
+
+            Bass.BASS_FXSetParameters(fx31param, param0);
+            Bass.BASS_FXSetParameters(fx63param, param1);
+            Bass.BASS_FXSetParameters(fx125param, param2);
+            Bass.BASS_FXSetParameters(fxgainparam, param3);
+
         }
 
         public void Pause()

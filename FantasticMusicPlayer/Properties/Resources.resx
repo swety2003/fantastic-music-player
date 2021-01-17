@@ -118,38 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="bass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bass.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="img_artist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img_artist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bassflac" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bassflac.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="bass_aac" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bass_aac.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="bass_ape" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bass_ape.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="bg_extendControl" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bg_extendControl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bg_glowing" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bg_glowing.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bg_layer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bg_layer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bg_volumeSlider" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bg_volumeSlider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="control_blueprint" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\control_blueprint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="default_background" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\default_background.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="default_cover" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\default_cover.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="glow_ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\glow_ball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="drag_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\drag_thumb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -157,67 +130,106 @@
   <data name="glowing_drag_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\glowing_drag_thumb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="glow_ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\glow_ball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="hiresaudio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\hiresaudio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_commingsoon_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_commingsoon_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_commingsoon_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_commingsoon_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ic_loop_list" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_loop_list.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ic_loop_all" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ic_loop_all.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ic_loop_list" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_loop_list.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_loop_one" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_loop_one.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_pause.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_play" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_play.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_shuffe" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_shuffe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_shuffe_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_shuffe_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_song" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_song.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_spectrum_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_spectrum_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_spectrum_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_spectrum_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ic_spectrum_disable" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ic_spectrum_disable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="img_album" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\img_album.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="img_artist" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\img_artist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="img_songlist" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img_songlist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="img_folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img_folder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="img_songlist" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\img_songlist.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bg_volumeSlider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg_volumeSlider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="hiresaudio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\hiresaudio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="window_frame" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\window_frame.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_shuffe_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_shuffe_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_commingsoon_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_commingsoon_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bass_aac" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bass_aac.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_play" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_play.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bassflac" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bassflac.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ic_spectrum_bottom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_spectrum_bottom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="default_cover" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\default_cover.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="default_background" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\default_background.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="control_blueprint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\control_blueprint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg_layer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg_layer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bass_fx" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bass_fx.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ic_song" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_song.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_spectrum_disable" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_spectrum_disable.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_loop_one" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_loop_one.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bassboost" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bassboost.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_commingsoon_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_commingsoon_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg_extendControl" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg_extendControl.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bass.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ic_spectrum_center" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_spectrum_center.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bass_ape" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bass_ape.dll;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ic_pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_pause.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ic_shuffe" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ic_shuffe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bg_glowing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bg_glowing.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="img_album" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img_album.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bassboost_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bassboost_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="重低音" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\重低音.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -25,8 +25,7 @@ namespace FantasticMusicPlayer.dbo.Model
             }
         }
         public List<SongEntry> Songs { get; set; } = new List<SongEntry>();
-        public int GetSongPosition(SongEntry song) => Songs.IndexOf(song);
-
+ 
         public override bool Equals(object obj)
         {
             return obj is PlayList list &&

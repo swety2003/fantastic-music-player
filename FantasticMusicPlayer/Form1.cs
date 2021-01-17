@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -121,6 +122,8 @@ namespace FantasticMusicPlayer
 
         Bitmap currentCover = cropToCircle(new Bitmap(Properties.Resources.default_cover, new Size(228, 228)));
 
+        bool bassboosted = false;
+
         static Bitmap cropToCircle(Bitmap bmp)
         {
             using (Graphics g = Graphics.FromImage(bmp))
@@ -161,6 +164,9 @@ namespace FantasticMusicPlayer
                 controller.ImReady();
                 player.Pause();
             }
+            RegisterHotKey(this.Handle, 2, 0, Keys.MediaPreviousTrack);
+            RegisterHotKey(this.Handle, 3, 0, Keys.MediaPlayPause);
+            RegisterHotKey(this.Handle, 4, 0, Keys.MediaNextTrack);
 
         }
 
@@ -285,6 +291,7 @@ namespace FantasticMusicPlayer
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
             layers.ForEach(l => l.Visible = this.WindowState != FormWindowState.Minimized);
+            renderTimer.Enabled = this.WindowState != FormWindowState.Minimized;
         }
 
 
@@ -628,6 +635,9 @@ namespace FantasticMusicPlayer
             {
                 g.DrawImage(imgHiResAudio.Image, new Rectangle(imgHiResAudio.Location, imgHiResAudio.Size));
             }
+            if (imgBass.Enabled) {
+                g.DrawImage(imgBass.Image, new Rectangle(imgBass.Location, imgBass.Size));
+            }
             topTextLayer.UpdateWindow();
         }
 
@@ -676,6 +686,9 @@ namespace FantasticMusicPlayer
         Bitmap spectrumBottom = new Bitmap(Properties.Resources.ic_spectrum_bottom, 32, 32);
         Bitmap spectrumDisable = new Bitmap(Properties.Resources.ic_spectrum_disable, 32, 32);
         Bitmap spectrumCenter = new Bitmap(Properties.Resources.ic_spectrum_center, 32, 32);
+
+        Bitmap bassBoostOn = new Bitmap(Properties.Resources.bassboost, 32, 32);
+        Bitmap bassBoostOff = new Bitmap(Properties.Resources.bassboost_off, 32, 32);
 
         void updateSliderControl()
         {
@@ -757,7 +770,7 @@ namespace FantasticMusicPlayer
                 Bitmap spectrumMode = SpectrumMode == 0 ? spectrumDisable : (SpectrumMode == 1 ? spectrumBottom : spectrumCenter);
 
                 DrawUtils.drawAlphaImage(fg, spectrumMode, btnShuffe.Left + offsetx, btnSpectrumMode.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
-                DrawUtils.drawAlphaImage(fg, ic_commingsoon2, btnShuffe.Left + offsetx, btnPreserved2.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
+                DrawUtils.drawAlphaImage(fg, Bassboosted ? bassBoostOn : bassBoostOff, btnShuffe.Left + offsetx, btnPreserved2.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
 
 
 
@@ -771,6 +784,12 @@ namespace FantasticMusicPlayer
         public float deceleration(float input) => (float)(1.0f - (1.0f - input) * (1.0f - input));
 
         public float acceleration(float input) => input * input;
+
+        public float easeOut(float input) {
+
+            return (float)(1 - Math.Pow(1 - input, 5) * (2 - (1 - input)));
+
+        }
 
         private void renderTimer_Tick(object sender, EventArgs e)
         {
@@ -829,6 +848,12 @@ namespace FantasticMusicPlayer
         Bitmap ic_shuffe_off = new Bitmap(Properties.Resources.ic_shuffe_off);
 
         bool shuffeMode { get => controller.Shuffe; set => controller.Shuffe = value; }
+        public bool Bassboosted { get => player.BassBoost; set { 
+                player.BassBoost=value;
+            }
+        }
+
+
 
         Bitmap ic_commingsoon1 = new Bitmap(Properties.Resources.ic_commingsoon_1);
         Bitmap ic_commingsoon2 = new Bitmap(Properties.Resources.ic_commingsoon_2);
@@ -885,12 +910,13 @@ namespace FantasticMusicPlayer
 
                 if (isExpanding)
                 {
-                    offsetx = -tblList.Width * acceleration(listAnimationCountdown);
+                    offsetx = -tblList.Width * (1f-easeOut(1-listAnimationCountdown));
+                    listAnimationCountdown -= 0.035f;
                 }
                 else {
                     offsetx = -tblList.Width * acceleration(1-listAnimationCountdown);
+                    listAnimationCountdown -= 0.07f;
                 }
-                listAnimationCountdown -= 0.07f;
 
                 g.DrawImage(listSurface, 0 + offsetx, 0f);
             }
@@ -992,6 +1018,10 @@ namespace FantasticMusicPlayer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.PlayListProvider.saveProgress();
+
+            UnregisterHotKey(this.Handle, 2);
+            UnregisterHotKey(this.Handle, 3);
+            UnregisterHotKey(this.Handle, 4);
         }
 
         private void Form1_Click(object sender, EventArgs e)
@@ -999,6 +1029,13 @@ namespace FantasticMusicPlayer
             if (tblVolumn.Visible) { btnVolume_Click(sender, e); }
             if (tblUtils.Visible) { btnMore_Click(sender, e); }
             if (tblList.Visible) { hideList(null); }
+        }
+
+        private void btnPreserved2_Click(object sender, EventArgs e)
+        {
+            Bassboosted = !Bassboosted;
+            imgBass.Enabled = Bassboosted;
+            updateTopControl();
         }
 
         float scrollbarSize = 16;
@@ -1036,7 +1073,7 @@ namespace FantasticMusicPlayer
                 }
 
 
-                if (position < 0) { position = 0; velotry = 0; }
+                if (position < 0) { position = 0; if (velotry < 0) { velotry = 0; }}
                 if (position >Math.Max(0,maxPosition)) { position = Math.Max(0, maxPosition); velotry = 0; }
 
                 int beginItem = (int)position / 1;
@@ -1094,7 +1131,7 @@ namespace FantasticMusicPlayer
                 g.DrawString(pl.Name, _this.lblArtsit.Font, pl==_this.controller.CurrentList ? yellow : white, textRect, _this.alignLeft);
                 g.DrawImage(playlistImg, 3, 3+by);
                 if (clicked) {
-                    _this.showList(new SongAdapter(_this, pl));
+                    _this.hideList(() => _this.showList(new SongAdapter(_this, pl)));
                 }
             }
 
@@ -1169,14 +1206,19 @@ namespace FantasticMusicPlayer
                 }
                 else
                 {
-                    showList(new FolderAdapter(this));
-                    position = controller.AllPlayList.IndexOf(controller.CurrentList) - 5;
+                    hideList(() =>
+                    {
+                        showList(new FolderAdapter(this));
+                        position = controller.AllPlayList.IndexOf(controller.CurrentList) - 5;
+                        velotry = 0.01f;
+                    });
                 }
             }
             else
             {
                 showList(new FolderAdapter(this));
                 position = controller.AllPlayList.IndexOf(controller.CurrentList) - 5;
+                velotry = 0.01f;
             }
         }
 
@@ -1207,17 +1249,50 @@ namespace FantasticMusicPlayer
                     hideList(null);
                 }
                 else {
-                    showList(new SongAdapter(this, controller.CurrentList));
-                    position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
+                    hideList(() =>
+                    {
+                        showList(new SongAdapter(this, controller.CurrentList));
+                        position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
+                        velotry = 0.01f;
+                    });
                 }
             }
             else
             {
                 showList(new SongAdapter(this,controller.CurrentList));
-
                 position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
+                velotry = 0.01f;
             }
         }
+
+        [DllImport("user32.dll")]
+        public static extern UInt32 RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, Keys vk);
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        protected override void WndProc(ref Message m)
+        {
+            const int WM_HOTKEY = 0x0312;
+            if (m.Msg == WM_HOTKEY)
+            {
+                if (m.WParam.ToInt32() == 2)
+                {
+                    btnPrev_Click(null, null);
+                }
+                if (m.WParam.ToInt32() == 3)
+                {
+                    btnPlay_Click(null, null);
+                }
+                if (m.WParam.ToInt32() == 4)
+                {
+                    btnNext_Click(null, null);
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+
     }
 
     class GraphicsLayer : Form{
@@ -1279,5 +1354,7 @@ namespace FantasticMusicPlayer
             Invoke(a);
         }
 
+
+       
     }
 }

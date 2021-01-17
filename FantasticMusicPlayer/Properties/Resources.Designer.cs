@@ -47,8 +47,8 @@ namespace FantasticMusicPlayer.Properties {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -87,6 +87,36 @@ namespace FantasticMusicPlayer.Properties {
             get {
                 object obj = ResourceManager.GetObject("bass_ape", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] bass_fx {
+            get {
+                object obj = ResourceManager.GetObject("bass_fx", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap bassboost {
+            get {
+                object obj = ResourceManager.GetObject("bassboost", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap bassboost_off {
+            get {
+                object obj = ResourceManager.GetObject("bassboost_off", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -396,6 +426,16 @@ namespace FantasticMusicPlayer.Properties {
         internal static System.Drawing.Bitmap window_frame {
             get {
                 object obj = ResourceManager.GetObject("window_frame", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap 重低音 {
+            get {
+                object obj = ResourceManager.GetObject("重低音", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

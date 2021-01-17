@@ -54,6 +54,7 @@
             this.infoTimer = new System.Windows.Forms.Timer(this.components);
             this.locSpectrumArea = new System.Windows.Forms.Label();
             this.tblTopInfo = new System.Windows.Forms.Panel();
+            this.imgBass = new System.Windows.Forms.PictureBox();
             this.imgHiResAudio = new System.Windows.Forms.PictureBox();
             this.tblUtils = new System.Windows.Forms.Panel();
             this.btnPreserved2 = new System.Windows.Forms.Button();
@@ -68,6 +69,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
             this.tblTopInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).BeginInit();
             this.tblUtils.SuspendLayout();
             this.tblVolumn.SuspendLayout();
@@ -370,6 +372,7 @@
             // tblTopInfo
             // 
             this.tblTopInfo.BackColor = System.Drawing.Color.Transparent;
+            this.tblTopInfo.Controls.Add(this.imgBass);
             this.tblTopInfo.Controls.Add(this.imgHiResAudio);
             this.tblTopInfo.Controls.Add(this.lblTitle);
             this.tblTopInfo.Controls.Add(this.lblArtsit);
@@ -379,13 +382,25 @@
             this.tblTopInfo.TabIndex = 10;
             this.tblTopInfo.Visible = false;
             // 
+            // imgBass
+            // 
+            this.imgBass.Enabled = false;
+            this.imgBass.Image = global::FantasticMusicPlayer.Properties.Resources.bassboost;
+            this.imgBass.Location = new System.Drawing.Point(625, 2);
+            this.imgBass.Name = "imgBass";
+            this.imgBass.Size = new System.Drawing.Size(42, 42);
+            this.imgBass.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.imgBass.TabIndex = 11;
+            this.imgBass.TabStop = false;
+            this.imgBass.Visible = false;
+            // 
             // imgHiResAudio
             // 
             this.imgHiResAudio.Enabled = false;
             this.imgHiResAudio.Image = global::FantasticMusicPlayer.Properties.Resources.hiresaudio;
-            this.imgHiResAudio.Location = new System.Drawing.Point(624, 2);
+            this.imgHiResAudio.Location = new System.Drawing.Point(2, 3);
             this.imgHiResAudio.Name = "imgHiResAudio";
-            this.imgHiResAudio.Size = new System.Drawing.Size(42, 42);
+            this.imgHiResAudio.Size = new System.Drawing.Size(43, 43);
             this.imgHiResAudio.TabIndex = 11;
             this.imgHiResAudio.TabStop = false;
             this.imgHiResAudio.Visible = false;
@@ -411,6 +426,7 @@
             this.btnPreserved2.TabIndex = 0;
             this.btnPreserved2.Text = "button1";
             this.btnPreserved2.UseVisualStyleBackColor = true;
+            this.btnPreserved2.Click += new System.EventHandler(this.btnPreserved2_Click);
             this.btnPreserved2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
             this.btnPreserved2.MouseEnter += new System.EventHandler(this.sfxAttaker);
             this.btnPreserved2.MouseLeave += new System.EventHandler(this.sfxReleaser);
@@ -540,6 +556,7 @@
             this.tblBottomControl.ResumeLayout(false);
             this.tblBottomControl.PerformLayout();
             this.tblTopInfo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).EndInit();
             this.tblUtils.ResumeLayout(false);
             this.tblVolumn.ResumeLayout(false);
@@ -585,6 +602,7 @@
         private System.Windows.Forms.Label locVolumeMinPoint;
         private System.Windows.Forms.Label locVolumnMaxPoint;
         private System.Windows.Forms.Panel tblList;
+        private System.Windows.Forms.PictureBox imgBass;
     }
 }
 

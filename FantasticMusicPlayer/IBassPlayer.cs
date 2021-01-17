@@ -31,6 +31,8 @@ namespace FantasticMusicPlayer
         void Replay();
         float Volume { get; set; }
         bool IsPlaying { get; set; }
+
+        bool BassBoost { get; set; }
     }
 
     public class AlbumEventArgs : EventArgs {
