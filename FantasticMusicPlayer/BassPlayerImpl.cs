@@ -102,13 +102,13 @@ namespace FantasticMusicPlayer
         }
 
         int currentPlaying = 0;
-        object loadingSync = new object();
         bool loading = false;
         public void Load(string filename)
         {
                 loading = true;
             
             updateTimer.Stop();
+            BassFx.BASS_FX_BPM_BeatFree(currentPlaying);
             BASS_StreamFree(currentPlaying);
 
             TAG_INFO tag = Un4seen.Bass.AddOn.Tags.BassTags.BASS_TAG_GetFromFile(filename);
@@ -152,6 +152,7 @@ namespace FantasticMusicPlayer
         int fx125param = 0;
         int fxgainparam = 0;
 
+
         void initFx() {
             fx31param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
             fx63param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
@@ -176,7 +177,6 @@ namespace FantasticMusicPlayer
             Bass.BASS_FXSetParameters(fx125param, param2);
             param3.fGain = 1f;
             Bass.BASS_FXSetParameters(fxgainparam, param3);
-
         }
 
         void applyFxStatus()
@@ -193,7 +193,7 @@ namespace FantasticMusicPlayer
             param0.fGain = _bassboosted ? 7 : 0;
             param1.fGain = _bassboosted ? 7 : 0;
             param2.fGain = _bassboosted ? 5f : 0;
-            param3.fGain = _bassboosted ? 0.44f : 0.75f;
+            param3.fGain = _bassboosted ? 0.44f : 0.85f;
 
             Bass.BASS_FXSetParameters(fx31param, param0);
             Bass.BASS_FXSetParameters(fx63param, param1);
@@ -235,7 +235,9 @@ namespace FantasticMusicPlayer
             {
                 if (disposing)
                 {
-                    // TODO: 释放托管状态(托管对象)
+                    Stop();
+                    updateTimer.Stop();
+                    updateTimer.Dispose();
                 }
                 BASS_SampleFree(currentPlaying);
                 BASS_Free();

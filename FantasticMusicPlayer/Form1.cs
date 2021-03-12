@@ -18,7 +18,7 @@ namespace FantasticMusicPlayer
 {
     public partial class Form1 : Form
     {
-        IBassPlayer player = new BassPlayerImpl();
+        BassPlayerImpl player = new BassPlayerImpl();
         PlayerController controller;
         public Form1()
         {
@@ -30,6 +30,11 @@ namespace FantasticMusicPlayer
             player.SongInfoAvailable += Player_SongInfoAvailable;
             controller = new PlayerController(new CurrentDirectorySongProvider());
             controller.SongChanged += Controller_SongChanged;
+        }
+
+        private void Invoke(Action p)
+        {
+            Invoke((Delegate)p);
         }
 
         private void Controller_SongChanged(object sender, SongSwitchedEventArgs e)
@@ -122,7 +127,6 @@ namespace FantasticMusicPlayer
 
         Bitmap currentCover = cropToCircle(new Bitmap(Properties.Resources.default_cover, new Size(228, 228)));
 
-        bool bassboosted = false;
 
         static Bitmap cropToCircle(Bitmap bmp)
         {
@@ -163,6 +167,10 @@ namespace FantasticMusicPlayer
             {
                 controller.ImReady();
                 player.Pause();
+                controller.LoopMode = Properties.Settings.Default.playmode;
+                controller.Shuffe = Properties.Settings.Default.shuffemode;
+                player.BassBoost = Properties.Settings.Default.bassboost;
+                SpectrumMode = Properties.Settings.Default.spectrummode;
             }
             RegisterHotKey(this.Handle, 2, 0, Keys.MediaPreviousTrack);
             RegisterHotKey(this.Handle, 3, 0, Keys.MediaPlayPause);
@@ -549,6 +557,8 @@ namespace FantasticMusicPlayer
         {
             Graphics g = spectrumLayer.g;
             g.Clear(Color.Transparent);
+
+
             float[] data = player.Spectrum;
             int len = processedFft.Length;
             if (SpectrumMode != 0)
@@ -1018,7 +1028,11 @@ namespace FantasticMusicPlayer
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             controller.PlayListProvider.saveProgress();
-
+            Properties.Settings.Default.playmode = controller.LoopMode;
+            Properties.Settings.Default.shuffemode = controller.Shuffe;
+            Properties.Settings.Default.bassboost = player.BassBoost;
+            Properties.Settings.Default.spectrummode = SpectrumMode;
+            Properties.Settings.Default.Save();
             UnregisterHotKey(this.Handle, 2);
             UnregisterHotKey(this.Handle, 3);
             UnregisterHotKey(this.Handle, 4);
