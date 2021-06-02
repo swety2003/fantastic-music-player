@@ -96,6 +96,9 @@ namespace FantasticMusicPlayer
         SizedStack<SongEntry> shuffeBackLog = new SizedStack<SongEntry>(30);
         SizedStack<SongEntry> shuffeForwardLog = new SizedStack<SongEntry>(30);
 
+        /// <summary>
+        /// 0 - 全部播放 1 - 单曲循环 2 - 列表循环
+        /// </summary>
         public int LoopMode { get; set; } = 0;
 
         private bool _shuffe = false;

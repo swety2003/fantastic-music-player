@@ -122,6 +122,7 @@
     <Content Include="bass_ape.dll" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="icon.ico" />
+    <Content Include="Resources\fx.png" />
     <None Include="Resources\重低音.png" />
     <None Include="Resources\bass_fx.dll" />
     <None Include="Resources\bassboost_off.png" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -92,12 +93,11 @@ namespace FantasticMusicPlayer
 
             }
             else {
-                    if (!loading && BASS_ChannelIsActive(currentPlaying) == BASSActive.BASS_ACTIVE_STOPPED && CurrentPosition > TotalPosition / 2)
-                    {
-                        updateTimer.Stop();
-                        Stopped?.Invoke(this, EventArgs.Empty);
-                    }
-                
+                if (!loading && BASS_ChannelIsActive(currentPlaying) == BASSActive.BASS_ACTIVE_STOPPED && CurrentPosition > TotalPosition / 2)
+                {
+                    updateTimer.Stop();
+                    Stopped?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -105,10 +105,8 @@ namespace FantasticMusicPlayer
         bool loading = false;
         public void Load(string filename)
         {
-                loading = true;
-            
+            loading = true;
             updateTimer.Stop();
-            BassFx.BASS_FX_BPM_BeatFree(currentPlaying);
             BASS_StreamFree(currentPlaying);
 
             TAG_INFO tag = Un4seen.Bass.AddOn.Tags.BassTags.BASS_TAG_GetFromFile(filename);
@@ -116,7 +114,8 @@ namespace FantasticMusicPlayer
 
             bool isHiResAudio = filename.ToLower().EndsWith(".flac") || filename.ToLower().EndsWith(".ape") || filename.ToLower().EndsWith(".wav");
 
-            SongInfoAvailable?.Invoke(this,new SongInfoEventArgs(tag.title, tag.artist, tag.album) { HiResAudio = isHiResAudio});
+            SongInfoAvailable?.Invoke(this,
+                new SongInfoEventArgs(tag.title, tag.artist, tag.album) {HiResAudio = isHiResAudio});
 
             if (tag.PictureCount > 0)
             {
@@ -132,7 +131,7 @@ namespace FantasticMusicPlayer
             else { 
                 CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(Properties.Resources.default_cover), true));
             }
-            currentPlaying = BASS_StreamCreateFile(filename, 0, 0, BASSFlag.BASS_DEFAULT);
+            currentPlaying = BASS_StreamCreateFile(filename, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_STREAM_PRESCAN);
             if (currentPlaying == 0) {
                 System.Windows.Forms.MessageBox.Show(BASS_ErrorGetCode().ToString(),"播放失败");
                 Stopped?.Invoke(this, EventArgs.Empty);
@@ -145,61 +144,84 @@ namespace FantasticMusicPlayer
             loading = false;
             updateTimer.Start();
         }
-
-
-        int fx31param = 0;
-        int fx63param = 0;
-        int fx125param = 0;
+        
         int fxgainparam = 0;
 
-
+        private List<int> appliedFx = new List<int>();
+        private List<FxObject> fxobjects = new List<FxObject>();
+        private float baseGAIN = 1;
+        
         void initFx() {
-            fx31param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
-            fx63param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ,0);
-            fx125param = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 0);
-            fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
-            BASS_BFX_PEAKEQ param0 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_PEAKEQ param1 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_PEAKEQ param2 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
-            param0.fGain = 0;
-            param0.fCenter = 31;
-            param0.fBandwidth = 1;
+             fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+             BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+             param3.fGain = baseGAIN;
+             Bass.BASS_FXSetParameters(fxgainparam, param3);
+        }
+        
+        private void AppendFx(float freq, float octivate, float gain)
+        {
+            BASS_BFX_PEAKEQ param = new BASS_BFX_PEAKEQ();
+            param.fBandwidth = octivate;
+            param.fCenter = freq;
+            param.fGain = gain;
+            int fxhandle = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 0);
+            BASS_FXSetParameters(fxhandle, param);
+            appliedFx.Add(fxhandle);
+        }
+        
+        private void ClearFx()
+        {
+            appliedFx.ForEach(fx=>BASS_ChannelRemoveFX(currentPlaying,fx));
+        }
+        
+        public void LoadFx(string fxfile)
+        {
+            if (fxfile == null || fxfile=="")
+            {
+                fxobjects.Clear();
+                baseGAIN = 1;
+                applyFxStatus();
+                return;
+            }
 
-            Bass.BASS_FXSetParameters(fx31param, param0);
-            param1.fGain = 0;
-            param1.fCenter = 63;
-            param1.fBandwidth=1;
-            Bass.BASS_FXSetParameters(fx63param, param1);
-            param2.fGain = 0;
-            param2.fCenter = 125;
-            param2.fBandwidth = 1;
-            Bass.BASS_FXSetParameters(fx125param, param2);
-            param3.fGain = 1f;
-            Bass.BASS_FXSetParameters(fxgainparam, param3);
+            String[] lines = File.ReadAllLines(fxfile);
+            List<FxObject> fxObjects = new List<FxObject>();
+            float gain = 0;
+            try
+            {
+                gain = float.Parse(lines[0]);
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    if (line.Trim() != "")
+                    {
+                        string[] param = line.Split(',');
+                        float p1 = float.Parse(param[0].Trim());
+                        float p2 = float.Parse(param[1].Trim());
+                        float p3 = float.Parse(param[2].Trim());
+                        fxObjects.Add(new FxObject(){Frequent = p1,BandwidthOctivates = p2,Gain = p3});
+                    }
+                }
+                
+                fxobjects.Clear();
+                fxobjects.AddRange(fxObjects);
+                baseGAIN = gain;
+                applyFxStatus();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         void applyFxStatus()
         {
-            BASS_BFX_PEAKEQ param0 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_PEAKEQ param1 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_PEAKEQ param2 = new BASS_BFX_PEAKEQ();
-            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
-            Bass.BASS_FXGetParameters(fx31param, param0);
-            Bass.BASS_FXGetParameters(fx63param, param1);
-            Bass.BASS_FXGetParameters(fx125param, param2);
-            Bass.BASS_FXGetParameters(fxgainparam,param3);
-
-            param0.fGain = _bassboosted ? 7 : 0;
-            param1.fGain = _bassboosted ? 7 : 0;
-            param2.fGain = _bassboosted ? 5f : 0;
-            param3.fGain = _bassboosted ? 0.44f : 0.85f;
-
-            Bass.BASS_FXSetParameters(fx31param, param0);
-            Bass.BASS_FXSetParameters(fx63param, param1);
-            Bass.BASS_FXSetParameters(fx125param, param2);
-            Bass.BASS_FXSetParameters(fxgainparam, param3);
-
+             BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+             Bass.BASS_FXGetParameters(fxgainparam,param3);
+             param3.fGain = baseGAIN;
+             Bass.BASS_FXSetParameters(fxgainparam, param3);
+             ClearFx();
+             fxobjects.ForEach(fo => AppendFx(fo.Frequent,fo.BandwidthOctivates,fo.Gain));
         }
 
         public void Pause()
@@ -251,4 +273,12 @@ namespace FantasticMusicPlayer
             GC.SuppressFinalize(this);
         }
     }
+
+    public class FxObject
+    {
+        public float Frequent { get; set; }
+        public float BandwidthOctivates { get; set; }
+        public float Gain { get; set; }
+    }
+    
 }

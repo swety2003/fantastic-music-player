@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
@@ -171,6 +172,13 @@ namespace FantasticMusicPlayer
                 controller.Shuffe = Properties.Settings.Default.shuffemode;
                 player.BassBoost = Properties.Settings.Default.bassboost;
                 SpectrumMode = Properties.Settings.Default.spectrummode;
+                try
+                {
+                    player.LoadFx(Properties.Settings.Default.fxfile);
+                }
+                catch (Exception ex)
+                {
+                }
             }
             RegisterHotKey(this.Handle, 2, 0, Keys.MediaPreviousTrack);
             RegisterHotKey(this.Handle, 3, 0, Keys.MediaPlayPause);
@@ -697,8 +705,7 @@ namespace FantasticMusicPlayer
         Bitmap spectrumDisable = new Bitmap(Properties.Resources.ic_spectrum_disable, 32, 32);
         Bitmap spectrumCenter = new Bitmap(Properties.Resources.ic_spectrum_center, 32, 32);
 
-        Bitmap bassBoostOn = new Bitmap(Properties.Resources.bassboost, 32, 32);
-        Bitmap bassBoostOff = new Bitmap(Properties.Resources.bassboost_off, 32, 32);
+        Bitmap bassBoostOn = new Bitmap(Properties.Resources.ic_fx, 32, 32);
 
         void updateSliderControl()
         {
@@ -780,7 +787,7 @@ namespace FantasticMusicPlayer
                 Bitmap spectrumMode = SpectrumMode == 0 ? spectrumDisable : (SpectrumMode == 1 ? spectrumBottom : spectrumCenter);
 
                 DrawUtils.drawAlphaImage(fg, spectrumMode, btnShuffe.Left + offsetx, btnSpectrumMode.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
-                DrawUtils.drawAlphaImage(fg, Bassboosted ? bassBoostOn : bassBoostOff, btnShuffe.Left + offsetx, btnPreserved2.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
+                DrawUtils.drawAlphaImage(fg, bassBoostOn , btnShuffe.Left + offsetx, btnPreserved2.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
 
 
 
@@ -1047,9 +1054,28 @@ namespace FantasticMusicPlayer
 
         private void btnPreserved2_Click(object sender, EventArgs e)
         {
-            Bassboosted = !Bassboosted;
-            imgBass.Enabled = Bassboosted;
-            updateTopControl();
+            if (tblList.Visible)
+            {
+                if (currentlist is FxAdapter)
+                {
+                    hideList(null);
+                }
+                else
+                {
+                    hideList(() =>
+                    {
+                        showList(new FxAdapter(this));
+                        position = controller.AllPlayList.IndexOf(controller.CurrentList) - 5;
+                        velotry = 0.01f;
+                    });
+                }
+            }
+            else
+            {
+                showList(new FxAdapter(this));
+                position = controller.AllPlayList.IndexOf(controller.CurrentList) - 5;
+                velotry = 0.01f;
+            }
         }
 
         float scrollbarSize = 16;
@@ -1165,6 +1191,71 @@ namespace FantasticMusicPlayer
             }
         }
 
+        class FxAdapter : IListAdapter
+        {
+            Form1 _this;
+            private List<string> fxfiles = new List<string>();
+            public FxAdapter(Form1 @this)
+            {
+                _this = @this;
+                fxfiles.Add("");
+                if (Directory.Exists("musicfx"))
+                {
+                    Directory.EnumerateFiles("musicfx","*.eq").ToList().ForEach(f=>fxfiles.Add(Path.GetFileName(f)));
+                }
+            }
+
+            Brush white = Brushes.White;
+            Brush yellow = Brushes.Yellow;
+
+            Bitmap playlistImg = new Bitmap(Properties.Resources.ic_spectrum_bottom,26,26);
+
+            public void drawItem(Graphics g, int position, float bx, float by, float w, float h, bool clicked)
+            {
+                RectangleF textRect = new RectangleF(bx + 36, by, w - 36, h);
+                string item = fxfiles[position];
+                string displayName = String.IsNullOrEmpty(item) ? "<无音效>" : item;
+                g.DrawString(displayName, _this.lblArtsit.Font,white, textRect, _this.alignLeft);
+                g.DrawImage(playlistImg, 3, 3+by);
+                if (clicked) {
+                    _this.hideList(() =>
+                    {
+                        string fxpath = fxfiles[position];
+                        if (fxpath != null && fxpath!="")
+                        {
+                            fxpath = Path.Combine("musicfx", fxpath);
+                            
+                        }
+                        try
+                        {
+                            _this.player.LoadFx(fxpath);
+                            Properties.Settings.Default.fxfile = fxpath;
+                            Properties.Settings.Default.Save();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message,"加载FX失败");
+                        }
+                    });
+                }
+            }
+
+            public int getCount()
+            {
+                return fxfiles.Count;
+            }
+
+            public object getItem(int position)
+            {
+                return fxfiles[position];
+            }
+
+            public float getItemHeight()
+            {
+                return 32;
+            }
+        }
+        
         class SongAdapter : IListAdapter
         {
             Form1 _this;
