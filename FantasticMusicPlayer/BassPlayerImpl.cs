@@ -32,8 +32,11 @@ namespace FantasticMusicPlayer
             {
                 return _volume;
             }
-            set  {BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, value);_volume = value;
-        } }
+            set  {
+                _volume = value;
+                updateVolume();
+            }
+        }
         public bool IsPlaying { get => BASS_ChannelIsActive(currentPlaying) == BASSActive.BASS_ACTIVE_PLAYING; set {
                 if (value)
                 {
@@ -146,18 +149,28 @@ namespace FantasticMusicPlayer
         }
         
         int fxgainparam = 0;
-
+        private int fxvolume = 0;
         private List<int> appliedFx = new List<int>();
         private List<FxObject> fxobjects = new List<FxObject>();
         private float baseGAIN = 1;
         
         void initFx() {
              fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+             fxvolume =  Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
              BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
              param3.fGain = baseGAIN;
              Bass.BASS_FXSetParameters(fxgainparam, param3);
+             param3.fGain = this._volume;
+             Bass.BASS_FXSetParameters(fxvolume, param3);
         }
-        
+
+        void updateVolume()
+        {
+            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+            param3.fGain = this._volume;
+            Bass.BASS_FXSetParameters(fxvolume, param3);
+        }
+
         private void AppendFx(float freq, float octivate, float gain)
         {
             BASS_BFX_PEAKEQ param = new BASS_BFX_PEAKEQ();

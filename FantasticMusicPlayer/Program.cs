@@ -56,6 +56,9 @@ namespace FantasticMusicPlayer
         static void Main()
         {
             checkLibrary();
+            #if DEBUG
+            Environment.CurrentDirectory = "Q:\\MP3Player";
+            #endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

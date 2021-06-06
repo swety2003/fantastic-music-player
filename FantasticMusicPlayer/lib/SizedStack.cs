@@ -12,6 +12,11 @@ namespace FantasticMusicPlayer.lib
         private int stackSize = 30;
         private List<T> stackContent = new List<T>();
 
+        public List<T> InnerList
+        {
+            get => stackContent;
+        }
+
         public SizedStack(int stackSize)
         {
             this.stackSize = stackSize;

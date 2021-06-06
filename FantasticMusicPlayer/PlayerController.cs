@@ -2,6 +2,7 @@
 using FantasticMusicPlayer.lib;
 using System;
 using System.Collections.Generic;
+using System.Deployment.Application;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,14 @@ namespace FantasticMusicPlayer
         public IPlayListProvider PlayListProvider { get; set; }
         public event EventHandler<SongSwitchedEventArgs> SongChanged;
         public SongEntry CurrentPlaying { get => PlayListProvider.LastSong; set => PlayListProvider.LastSong = value; }
-        public PlayList CurrentList { get => PlayListProvider.LastPlayList; set => PlayListProvider.LastPlayList = value; }
+        public PlayList CurrentList { get => PlayListProvider.LastPlayList;
+            set
+            {
+                PlayListProvider.LastPlayList = value;
+                shuffeBackLog.Clear();
+                shuffeForwardLog.Clear();
+            }
+        }
         public List<PlayList> AllPlayList { get; }
         public List<SongEntry> SongInList { get; }
         Random rnd = new Random();
@@ -53,6 +61,46 @@ namespace FantasticMusicPlayer
             CurrentPlaying = CurrentList.Songs[songptr];
             changeSong(CurrentPlaying);
         }
+
+        SongEntry pollRandomNext()
+        {
+            if (CurrentList.Songs.Count>3)
+            {
+                SongEntry se = null;
+                bool valid = false;
+                while (!valid)
+                {
+                    se = CurrentList.Songs[rnd.Next(0, CurrentList.Songs.Count)];
+                    int count = CurrentList.Songs.Count / 2;
+                    int begin = shuffeBackLog.InnerList.Count - count;
+                    if (begin < 0)
+                    {
+                        begin = 0;
+                    }
+                    valid = true;
+                    for (int i = begin; i < shuffeBackLog.InnerList.Count; i++)
+                    {
+                        if (shuffeBackLog.InnerList[i].Equals(se))
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+                }
+                return se;
+            }
+            else
+            {
+                int idx = CurrentList.Songs.IndexOf(CurrentPlaying);
+                idx++;
+                if (idx >= CurrentList.Songs.Count)
+                {
+                    idx = 0;
+                }
+                return CurrentList.Songs[idx];
+            }
+        }
+
         void next() {
             if (Shuffe)
             {
@@ -64,7 +112,7 @@ namespace FantasticMusicPlayer
                 }
                 else
                 {
-                    CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
+                    CurrentPlaying = pollRandomNext();
                 }
                 changeSong(CurrentPlaying);
                 return;
@@ -93,8 +141,8 @@ namespace FantasticMusicPlayer
 
         private bool HasSong = false;
 
-        SizedStack<SongEntry> shuffeBackLog = new SizedStack<SongEntry>(30);
-        SizedStack<SongEntry> shuffeForwardLog = new SizedStack<SongEntry>(30);
+        SizedStack<SongEntry> shuffeBackLog = new SizedStack<SongEntry>(80);
+        SizedStack<SongEntry> shuffeForwardLog = new SizedStack<SongEntry>(20);
 
         /// <summary>
         /// 0 - 全部播放 1 - 单曲循环 2 - 列表循环
