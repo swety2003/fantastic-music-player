@@ -23,7 +23,7 @@ Music player with a fancy ui, powered by bass.dll
 
 #### 如何编写音效文件
 
-1.在音乐目录下创建musicfx文件夹
+1.在音乐目录下创建.musicfx文件夹(前面有个点）
 
 2.新建文本文档，后缀名为eq
 

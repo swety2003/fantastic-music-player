@@ -1199,9 +1199,9 @@ namespace FantasticMusicPlayer
             {
                 _this = @this;
                 fxfiles.Add("");
-                if (Directory.Exists("musicfx"))
+                if (Directory.Exists(".musicfx"))
                 {
-                    Directory.EnumerateFiles("musicfx","*.eq").ToList().ForEach(f=>fxfiles.Add(Path.GetFileName(f)));
+                    Directory.EnumerateFiles(".musicfx","*.eq").ToList().ForEach(f=>fxfiles.Add(Path.GetFileName(f)));
                 }
             }
 
@@ -1223,7 +1223,7 @@ namespace FantasticMusicPlayer
                         string fxpath = fxfiles[position];
                         if (fxpath != null && fxpath!="")
                         {
-                            fxpath = Path.Combine("musicfx", fxpath);
+                            fxpath = Path.Combine(".musicfx", fxpath);
                             
                         }
                         try
