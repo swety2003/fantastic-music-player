@@ -147,7 +147,11 @@ namespace FantasticMusicPlayer
         /// <summary>
         /// 0 - 全部播放 1 - 单曲循环 2 - 列表循环
         /// </summary>
-        public int LoopMode { get; set; } = 0;
+        private int _loopMode = 0;
+        public int LoopMode { get => _loopMode; set {
+                _loopMode = value;
+            }
+        }
 
         private bool _shuffe = false;
         public bool Shuffe { get=>_shuffe; set {

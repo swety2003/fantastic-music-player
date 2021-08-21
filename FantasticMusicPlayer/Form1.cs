@@ -833,6 +833,7 @@ namespace FantasticMusicPlayer
         {
             loopMode++;
             if (loopMode > 2) { loopMode = 0; }
+            player.Looping = loopMode == 1;
         }
 
         private void btnShuffe_Click(object sender, EventArgs e)

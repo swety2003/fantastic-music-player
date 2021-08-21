@@ -140,7 +140,7 @@ namespace FantasticMusicPlayer
                 Stopped?.Invoke(this, EventArgs.Empty);
                 return;
             };
-
+            Looping = Looping;
             initFx();
             applyFxStatus();
             BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
@@ -186,7 +186,17 @@ namespace FantasticMusicPlayer
         {
             appliedFx.ForEach(fx=>BASS_ChannelRemoveFX(currentPlaying,fx));
         }
-        
+
+        private bool _looping = false;
+        public bool Looping {
+            get => _looping;
+            set  {
+                this._looping = value;
+                BASSFlag loopFlag = this._looping ? BASSFlag.BASS_SAMPLE_LOOP : ~BASSFlag.BASS_SAMPLE_LOOP;
+                BASSFlag result =  Bass.BASS_ChannelFlags(currentPlaying, loopFlag, BASSFlag.BASS_SAMPLE_LOOP);
+            }
+        }
+
         public void LoadFx(string fxfile)
         {
             if (fxfile == null || fxfile=="")
