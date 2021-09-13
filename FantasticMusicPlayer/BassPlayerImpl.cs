@@ -14,6 +14,9 @@ namespace FantasticMusicPlayer
 {
     class BassPlayerImpl : IBassPlayer
     {
+
+        
+
         private bool disposedValue;
 
         public float[] Spectrum => fft;
@@ -63,7 +66,7 @@ namespace FantasticMusicPlayer
 
         public void init()
         {
-            
+            BASS_SetConfig(BASSConfig.BASS_CONFIG_FLOATDSP, true);
             if (BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
                 updateTimer = new BASSTimer(1);
@@ -92,6 +95,7 @@ namespace FantasticMusicPlayer
                 if (currentPlaying != 0)
                 {
                     BASS_ChannelGetData(currentPlaying, fft, (int)BASSData.BASS_DATA_FFT1024);
+                    
                 }
 
             }
@@ -102,12 +106,40 @@ namespace FantasticMusicPlayer
                     Stopped?.Invoke(this, EventArgs.Empty);
                 }
             }
+
+            if (Bass.BASS_GetDeviceInfo(Bass.BASS_GetDevice(), deviceinfo)) {
+                if (!deviceinfo.IsDefault)
+                {
+                    switchDevice();
+                }
+            }
         }
+
+        private void switchDevice()
+        {
+            updateTimer.Stop();
+            bool paused = IsPlaying;
+            long position = CurrentPosition;
+            BASS_Free();
+            init();
+            Load(lastname);
+            CurrentPosition = position;
+            IsPlaying = paused;
+            updateTimer.Start();
+        }
+
+        BASS_DEVICEINFO deviceinfo = new BASS_DEVICEINFO();
+
+
 
         int currentPlaying = 0;
         bool loading = false;
+
+        private string lastname = null;
+
         public void Load(string filename)
         {
+            lastname = filename;
             loading = true;
             updateTimer.Stop();
             BASS_StreamFree(currentPlaying);
@@ -127,7 +159,6 @@ namespace FantasticMusicPlayer
                     CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(tag.PictureGet(0).PictureImage), false));
                 }
                 catch {
-
                     CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(Properties.Resources.default_cover), true));
                 }
             }
@@ -144,10 +175,64 @@ namespace FantasticMusicPlayer
             initFx();
             applyFxStatus();
             BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
+            BASS_CHANNELINFO info = new BASS_CHANNELINFO();
+            BASS_ChannelGetInfo(currentPlaying, info);
+            samplerate = info.freq;
+            channels = info.chans;
+            canProcSurround = bitdepth > 0 && samplerate > 0 && channels==2;
+            
+            if (surroundProc == null) {
+                surroundProc = new DSPPROC(surroundSoundDspProc);
+            }
+            if (canProcSurround) {
+                delaybuffer = new byte[samplerate / 200 * bitdepth];
+                Console.WriteLine("Using buffer size " + delaybuffer.Length);
+                BASS_ChannelSetDSP(currentPlaying, surroundProc, IntPtr.Zero, 50);
+            }
             loading = false;
             updateTimer.Start();
         }
-        
+
+
+        public bool SurroundSound = false;
+        private int samplerate;
+        private int channels = 2;
+        private byte[] delaybuffer;
+        private int bitdepth = 4;
+        private int delayBufferPtr = 0;
+        private DSPPROC surroundProc;
+        private bool canProcSurround = true;
+
+        private void surroundSoundDspProc(int handle, int channel, IntPtr buffer, int bufferlen, IntPtr user) {
+            if (bufferlen == 0 || buffer == IntPtr.Zero || (!(SurroundSound && canProcSurround))) {
+                return;
+            }
+            unsafe
+            {
+                byte* data = (byte*)buffer;
+                
+                    for (int i = 0; i < bufferlen; i++)
+                    {
+                        if (((i / 4) & 1) == 1)
+                        {
+                            byte d = data[i];
+                            //d = 0;
+                            data[i] = delaybuffer[delayBufferPtr];
+                            delaybuffer[delayBufferPtr] = d;
+                            delayBufferPtr++;
+                            if (delayBufferPtr >= delaybuffer.Length)
+                            {
+                                delayBufferPtr = 0;
+                            }
+                        }
+                    }
+                
+            }
+
+        }
+
+
+
         int fxgainparam = 0;
         private int fxvolume = 0;
         private List<int> appliedFx = new List<int>();

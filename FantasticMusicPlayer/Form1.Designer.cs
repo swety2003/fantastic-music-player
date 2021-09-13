@@ -65,6 +65,8 @@
             this.locVolumeMinPoint = new System.Windows.Forms.Label();
             this.locVolumnMaxPoint = new System.Windows.Forms.Label();
             this.tblList = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuSurround = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -73,6 +75,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).BeginInit();
             this.tblUtils.SuspendLayout();
             this.tblVolumn.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // numProgress
@@ -419,6 +422,7 @@
             // 
             // btnPreserved2
             // 
+            this.btnPreserved2.ContextMenuStrip = this.contextMenuStrip1;
             this.btnPreserved2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnPreserved2.Location = new System.Drawing.Point(14, 156);
             this.btnPreserved2.Name = "btnPreserved2";
@@ -521,6 +525,21 @@
             this.tblList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listMouseMove);
             this.tblList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listMouseUp);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSurround});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(113, 26);
+            // 
+            // mnuSurround
+            // 
+            this.mnuSurround.CheckOnClick = true;
+            this.mnuSurround.Name = "mnuSurround";
+            this.mnuSurround.Size = new System.Drawing.Size(112, 22);
+            this.mnuSurround.Text = "环绕声";
+            this.mnuSurround.Click += new System.EventHandler(this.mnuSurround_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -560,6 +579,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).EndInit();
             this.tblUtils.ResumeLayout(false);
             this.tblVolumn.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -603,6 +623,8 @@
         private System.Windows.Forms.Label locVolumnMaxPoint;
         private System.Windows.Forms.Panel tblList;
         private System.Windows.Forms.PictureBox imgBass;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem mnuSurround;
     }
 }
 

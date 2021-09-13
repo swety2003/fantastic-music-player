@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -21,6 +22,9 @@ namespace FantasticMusicPlayer
     {
         BassPlayerImpl player = new BassPlayerImpl();
         PlayerController controller;
+
+        
+
         public Form1()
         {
             InitializeComponent();
@@ -176,7 +180,7 @@ namespace FantasticMusicPlayer
                 {
                     player.LoadFx(Properties.Settings.Default.fxfile);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                 }
             }
@@ -358,8 +362,8 @@ namespace FantasticMusicPlayer
         float alpha = 0;
         float lightMovementX = 0;
 
-        StringFormat alignLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near,FormatFlags=StringFormatFlags.NoWrap };
-        StringFormat alignRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far,FormatFlags = StringFormatFlags.NoWrap };
+        StringFormat alignLeft = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near, FormatFlags = StringFormatFlags.NoWrap };
+        StringFormat alignRight = new StringFormat() { LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far, FormatFlags = StringFormatFlags.NoWrap };
 
         private void infoTimer_Tick(object sender, EventArgs e)
         {
@@ -384,7 +388,7 @@ namespace FantasticMusicPlayer
 
         float movementSmoothFactor = 0.17f;
 
-       
+
 
         bool progressChanging = false;
 
@@ -480,22 +484,24 @@ namespace FantasticMusicPlayer
             numProgress.Value = (int)player.CurrentPosition;
 
 
+            lock (white)
+            {
+                Graphics g = bottomControlLayer.g;
+                g.Clear(Color.Transparent);
+                g.DrawImage(player.IsPlaying ? ic_btnPause : ic_btnPlay, btnPlay.Location);
+                g.DrawString(timeToString(player.CurrentPosition), lblCurrentTime.Font, white, new Rectangle(lblCurrentTime.Location, lblCurrentTime.Size), alignRight);
+                g.DrawString(timeToString(player.TotalPosition), lblTotalTime.Font, white, new Rectangle(lblTotalTime.Location, lblTotalTime.Size), alignLeft);
 
-            Graphics g = bottomControlLayer.g;
-            g.Clear(Color.Transparent);
-            g.DrawImage(player.IsPlaying ? ic_btnPause : ic_btnPlay, btnPlay.Location);
-            g.DrawString(timeToString(player.CurrentPosition), lblCurrentTime.Font, white, new Rectangle(lblCurrentTime.Location, lblCurrentTime.Size), alignRight);
-            g.DrawString(timeToString(player.TotalPosition), lblTotalTime.Font, white, new Rectangle(lblTotalTime.Location, lblTotalTime.Size), alignLeft);
+                g.DrawImage(progressThumb, (float)this.Width * numProgress.Value / numProgress.Maximum - locButtonBlur.Width / 2, locProgress.Top - locButtonBlur.Height / 2);
 
-            g.DrawImage(progressThumb, (float)this.Width * numProgress.Value / numProgress.Maximum - locButtonBlur.Width / 2, locProgress.Top - locButtonBlur.Height / 2);
+                float finalAlpha = 1;
+                if (lightLumianceOverlay < 0.5) { finalAlpha -= lightLumianceOverlay; }
+                if (lightLumianceOverlay >= 0.5) { finalAlpha -= (1 - lightLumianceOverlay); }
 
-            float finalAlpha = 1;
-            if (lightLumianceOverlay < 0.5) { finalAlpha -= lightLumianceOverlay; }
-            if (lightLumianceOverlay >= 0.5) { finalAlpha -= (1 - lightLumianceOverlay); }
+                DrawUtils.drawAlphaImage(g, progressThumb, (float)this.Width * numProgress.Value / numProgress.Maximum - locButtonBlur.Width / 2, locProgress.Top - locButtonBlur.Height / 2, locButtonBlur.Width, locButtonBlur.Height, finalAlpha);
 
-            DrawUtils.drawAlphaImage(g, progressThumb, (float)this.Width * numProgress.Value / numProgress.Maximum - locButtonBlur.Width / 2, locProgress.Top - locButtonBlur.Height / 2, locButtonBlur.Width, locButtonBlur.Height, finalAlpha);
-
-            bottomControlLayer.UpdateWindow();
+                bottomControlLayer.UpdateWindow();
+            }
         }
 
         private void btnVolume_Click(object sender, EventArgs e)
@@ -541,11 +547,11 @@ namespace FantasticMusicPlayer
             set
             {
                 _spectrumMode = value;
-                if (value == 1)
+                if (value == 1 || value == 3)
                 {
                     spectrumLayer.changePosition(locSpectrumArea.Location);
                 }
-                if (value == 2)
+                if (value == 2 || value==4)
                 {
                     spectrumLayer.changePosition(new Point(0, locSpectrum.Top - 64));
                 }
@@ -557,9 +563,36 @@ namespace FantasticMusicPlayer
 
         float fftSmoothFactor = 0.4f;
 
-        Pen fftline = new Pen(new SolidBrush(Color.FromArgb(192, 255, 255, 255)), 2.5f) { StartCap = System.Drawing.Drawing2D.LineCap.Round };
+        Pen fftline = createFFTLines1();
+        Pen fftline4 = createFFTLines2();
         Pen fftline2 = new Pen(new SolidBrush(Color.FromArgb(192, 255, 255, 255)), 2f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round };
-        Pen fftline3 = new Pen(new SolidBrush(Color.FromArgb(192, 255, 255, 255)), 1f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round };
+        Pen fftline3 = new Pen(new SolidBrush(Color.FromArgb(96, 255, 255, 255)), 1f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round };
+
+        private static Pen createFFTLines1() {
+            ColorBlend cb = new ColorBlend(3);
+            cb.Colors[0] = Color.Transparent;
+            cb.Colors[1] = Color.White;
+            cb.Colors[2] = Color.White;
+            cb.Positions[0] = 0;
+            cb.Positions[1] = 0.8f;
+            cb.Positions[2] = 1;
+            LinearGradientBrush brush = new LinearGradientBrush(new Point(0, -1), new Point(0, 128), Color.Transparent, Color.White);
+            brush.InterpolationColors = cb;
+            return new Pen(brush,2f) { StartCap = LineCap.Round };
+        }
+        private static Pen createFFTLines2()
+        {
+            ColorBlend cb = new ColorBlend(3);
+            cb.Colors[0] = Color.Transparent;
+            cb.Colors[1] = Color.White;
+            cb.Colors[2] = Color.Transparent;
+            cb.Positions[0] = 0;
+            cb.Positions[1] = 0.5f;
+            cb.Positions[2] = 1;
+            LinearGradientBrush brush = new LinearGradientBrush(new Point(0, -1), new Point(0, 128), Color.Transparent, Color.White);
+            brush.InterpolationColors = cb;
+            return new Pen(brush, 2f) { StartCap = LineCap.Round,EndCap = LineCap.Round };
+        }
 
         void updateSpectrum()
         {
@@ -607,35 +640,65 @@ namespace FantasticMusicPlayer
                 }
             }
 
-            if (SpectrumMode == 1)
+            if (SpectrumMode == 1 || SpectrumMode == 3)
             {
                 for (int i = 0; i < len; i++)
                 {
                     float y = 2f + (locSpectrumArea.Width - 4f) / (len - 1) * i;
                     float x1 = locSpectrumArea.Height;
                     float x2 = x1 - targetFft[i] * locSpectrumArea.Height;
-                    g.DrawLine(fftline, y, x2, y, x1);
+                    //fftline.TranslateTransform(x2, x2);
+                    g.TranslateTransform(0, x2);
+                    g.DrawLine(SpectrumMode==1 ? fftline2 : fftline, y, 0, y, x1);
+                    g.TranslateTransform(0, -x2);
+                    //fftline.TranslateTransform(-x2, -x2);
                 }
             }
-            if (SpectrumMode == 2)
+            if (SpectrumMode == 2 || SpectrumMode == 4)
             {
-                for (int i = 0; i < len; i += 2)
+                for (int i = 0; i < len; i ++)
                 {
-                    float multiplier = 1f - (i / 200f) * 0.94f;
-                    float x = (locMask.Right - 32) + (Width - locMask.Right + 32) * (i / 2) / 100f;
-                    float y1 = 64 - targetFft[i] * multiplier * locSpectrumArea.Height / 2;
-                    float y2 = 64 + targetFft[i] * multiplier * locSpectrumArea.Height / 2;
-                    g.DrawLine(fftline2, x, y2, x, y1);
-                }
-                for (int i = 1; i < len; i += 2)
-                {
+                    float multiplier = SpectrumMode ==2 ? (1f - (i / 200f) * 0.94f) : (len - i < 64 ? (len - i) / 64f : 1);
 
-                    float multiplier = 1f - ((i - 1) / 200f) * 0.94f;
-                    float x = locMask.Left + 32 - (locMask.Left + 32) * ((i - 1) / 2) / 100f;
+                    float x = 0;
+                    if (i % 2 == 0) {
+                        x =  (locMask.Right - 32) + (Width - locMask.Right + 32) * (i / 2) / 100f;
+                    } else
+                    {
+                        x = locMask.Left + 32 - (locMask.Left + 32) * ((i - 1) / 2) / 100f;
+                    }
                     float y1 = 64 - targetFft[i] * multiplier * locSpectrumArea.Height / 2;
                     float y2 = 64 + targetFft[i] * multiplier * locSpectrumArea.Height / 2;
-                    g.DrawLine(fftline2, x, y2, x, y1);
+                    if (SpectrumMode == 2)
+                    {
+                        g.DrawLine(fftline2, x, y2, x, y1);
+                    }
+                    else
+                    {
+                        g.TranslateTransform(0, y1);
+                        float scale = 1;
+                        if(y2 - y1 < 0.5)
+                        {
+                            scale =1f / 1024f;
+                        }
+                        else
+                        {
+                            scale = (y2 - y1) /128f ;
+                        }
+                        g.ScaleTransform(1, scale);
+                        g.DrawLine(fftline4, x, 0, x, 128);
+                        g.ResetTransform();
+                    }
                 }
+                //for (int i = 1; i < len; i += 2)
+                //{
+
+                //    float multiplier = 1f - ((i - 1) / 200f) * 0.94f;
+                //    float x = locMask.Left + 32 - (locMask.Left + 32) * ((i - 1) / 2) / 100f;
+                //    float y1 = 64 - targetFft[i] * multiplier * locSpectrumArea.Height / 2;
+                //    float y2 = 64 + targetFft[i] * multiplier * locSpectrumArea.Height / 2;
+                //    g.DrawLine(fftline2, x, y2, x, y1);
+                //}
                 g.DrawLine(fftline3, 0, 64, 768, 64);
             }
             spectrumLayer.UpdateWindow();
@@ -643,20 +706,26 @@ namespace FantasticMusicPlayer
 
         float dec2log(float x) => x == 0 ? 0 : Math.Max(0, (float)(Math.Log10(x * 10000) / 4));
 
+        
+
         void updateTopControl()
         {
-            Graphics g = topTextLayer.g;
-            g.Clear(Color.Transparent);
-            g.DrawString(lblTitle.Text, lblTitle.Font, white, new Rectangle(lblTitle.Location, lblTitle.Size), alignLeft);
-            g.DrawString(lblArtsit.Text, lblArtsit.Font, white, new Rectangle(lblArtsit.Location, lblArtsit.Size), alignLeft);
-            if (imgHiResAudio.Enabled)
+            lock (white)
             {
-                g.DrawImage(imgHiResAudio.Image, new Rectangle(imgHiResAudio.Location, imgHiResAudio.Size));
+                Graphics g = topTextLayer.g;
+                g.Clear(Color.Transparent);
+                g.DrawString(lblTitle.Text, lblTitle.Font, white, new Rectangle(lblTitle.Location, lblTitle.Size), alignLeft);
+                g.DrawString(lblArtsit.Text, lblArtsit.Font, white, new Rectangle(lblArtsit.Location, lblArtsit.Size), alignLeft);
+                if (imgHiResAudio.Enabled)
+                {
+                    g.DrawImage(imgHiResAudio.Image, new Rectangle(imgHiResAudio.Location, imgHiResAudio.Size));
+                }
+                if (imgBass.Enabled)
+                {
+                    g.DrawImage(imgBass.Image, new Rectangle(imgBass.Location, imgBass.Size));
+                }
+                topTextLayer.UpdateWindow();
             }
-            if (imgBass.Enabled) {
-                g.DrawImage(imgBass.Image, new Rectangle(imgBass.Location, imgBass.Size));
-            }
-            topTextLayer.UpdateWindow();
         }
 
         bool adjustVolume = false;
@@ -854,7 +923,8 @@ namespace FantasticMusicPlayer
         private void btnPreserved1_Click(object sender, EventArgs e)
         {
             SpectrumMode++;
-            if (SpectrumMode > 2) { SpectrumMode = 0; }
+            if (SpectrumMode > 4) { SpectrumMode = 0; }
+            //player.SkipFFT = SpectrumMode == 0;
         }
 
         Bitmap ic_loop_all = new Bitmap(Properties.Resources.ic_loop_all);//1
@@ -1140,6 +1210,11 @@ namespace FantasticMusicPlayer
                     g.FillRectangle(scrollbar,tblList.Width - scrollbarSize, scrollbarPosition, scrollbarSize, scrollbarLength);
                 }
             }
+        }
+
+        private void mnuSurround_Click(object sender, EventArgs e)
+        {
+            player.SurroundSound = mnuSurround.Checked;
         }
 
         IListAdapter currentlist = null;

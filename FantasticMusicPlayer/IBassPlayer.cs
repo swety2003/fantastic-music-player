@@ -19,7 +19,7 @@ namespace FantasticMusicPlayer
         event EventHandler<AlbumEventArgs> CoverAvailable;
         event EventHandler<SongInfoEventArgs> SongInfoAvailable;
 
-        
+        bool Looping { get; set; }
 
         void Load(String filename);
 
