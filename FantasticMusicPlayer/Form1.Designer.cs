@@ -49,6 +49,7 @@
             this.locButtonBlur = new System.Windows.Forms.Label();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.tblBottomControl = new System.Windows.Forms.Panel();
+            this.btnPreserved2 = new System.Windows.Forms.Button();
             this.lblProgressManager = new System.Windows.Forms.Panel();
             this.lblTotalTime = new System.Windows.Forms.Label();
             this.infoTimer = new System.Windows.Forms.Timer(this.components);
@@ -57,7 +58,7 @@
             this.imgBass = new System.Windows.Forms.PictureBox();
             this.imgHiResAudio = new System.Windows.Forms.PictureBox();
             this.tblUtils = new System.Windows.Forms.Panel();
-            this.btnPreserved2 = new System.Windows.Forms.Button();
+            this.btnSrs = new System.Windows.Forms.Button();
             this.btnSpectrumMode = new System.Windows.Forms.Button();
             this.btnShuffe = new System.Windows.Forms.Button();
             this.btnLoopMode = new System.Windows.Forms.Button();
@@ -65,8 +66,6 @@
             this.locVolumeMinPoint = new System.Windows.Forms.Label();
             this.locVolumnMaxPoint = new System.Windows.Forms.Label();
             this.tblList = new System.Windows.Forms.Panel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.mnuSurround = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -75,7 +74,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).BeginInit();
             this.tblUtils.SuspendLayout();
             this.tblVolumn.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // numProgress
@@ -314,6 +312,7 @@
             // tblBottomControl
             // 
             this.tblBottomControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.tblBottomControl.Controls.Add(this.btnPreserved2);
             this.tblBottomControl.Controls.Add(this.lblProgressManager);
             this.tblBottomControl.Controls.Add(this.lblTotalTime);
             this.tblBottomControl.Controls.Add(this.locProgress);
@@ -333,6 +332,21 @@
             this.tblBottomControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.tblBottomControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.tblBottomControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
+            // 
+            // btnPreserved2
+            // 
+            this.btnPreserved2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPreserved2.Location = new System.Drawing.Point(96, 54);
+            this.btnPreserved2.Name = "btnPreserved2";
+            this.btnPreserved2.Size = new System.Drawing.Size(35, 35);
+            this.btnPreserved2.TabIndex = 0;
+            this.btnPreserved2.Text = "button1";
+            this.btnPreserved2.UseVisualStyleBackColor = true;
+            this.btnPreserved2.Click += new System.EventHandler(this.btnPreserved2_Click);
+            this.btnPreserved2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
+            this.btnPreserved2.MouseEnter += new System.EventHandler(this.sfxAttaker);
+            this.btnPreserved2.MouseLeave += new System.EventHandler(this.sfxReleaser);
+            this.btnPreserved2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
             // 
             // lblProgressManager
             // 
@@ -410,7 +424,7 @@
             // 
             // tblUtils
             // 
-            this.tblUtils.Controls.Add(this.btnPreserved2);
+            this.tblUtils.Controls.Add(this.btnSrs);
             this.tblUtils.Controls.Add(this.btnSpectrumMode);
             this.tblUtils.Controls.Add(this.btnShuffe);
             this.tblUtils.Controls.Add(this.btnLoopMode);
@@ -420,21 +434,20 @@
             this.tblUtils.TabIndex = 11;
             this.tblUtils.Visible = false;
             // 
-            // btnPreserved2
+            // btnSrs
             // 
-            this.btnPreserved2.ContextMenuStrip = this.contextMenuStrip1;
-            this.btnPreserved2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPreserved2.Location = new System.Drawing.Point(14, 156);
-            this.btnPreserved2.Name = "btnPreserved2";
-            this.btnPreserved2.Size = new System.Drawing.Size(32, 32);
-            this.btnPreserved2.TabIndex = 0;
-            this.btnPreserved2.Text = "button1";
-            this.btnPreserved2.UseVisualStyleBackColor = true;
-            this.btnPreserved2.Click += new System.EventHandler(this.btnPreserved2_Click);
-            this.btnPreserved2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
-            this.btnPreserved2.MouseEnter += new System.EventHandler(this.sfxAttaker);
-            this.btnPreserved2.MouseLeave += new System.EventHandler(this.sfxReleaser);
-            this.btnPreserved2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
+            this.btnSrs.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSrs.Location = new System.Drawing.Point(13, 157);
+            this.btnSrs.Name = "btnSrs";
+            this.btnSrs.Size = new System.Drawing.Size(32, 32);
+            this.btnSrs.TabIndex = 0;
+            this.btnSrs.Text = "button1";
+            this.btnSrs.UseVisualStyleBackColor = true;
+            this.btnSrs.Click += new System.EventHandler(this.btnSrs_Click);
+            this.btnSrs.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
+            this.btnSrs.MouseEnter += new System.EventHandler(this.sfxAttaker);
+            this.btnSrs.MouseLeave += new System.EventHandler(this.sfxReleaser);
+            this.btnSrs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
             // 
             // btnSpectrumMode
             // 
@@ -525,21 +538,6 @@
             this.tblList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listMouseMove);
             this.tblList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listMouseUp);
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSurround});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(113, 26);
-            // 
-            // mnuSurround
-            // 
-            this.mnuSurround.CheckOnClick = true;
-            this.mnuSurround.Name = "mnuSurround";
-            this.mnuSurround.Size = new System.Drawing.Size(112, 22);
-            this.mnuSurround.Text = "环绕声";
-            this.mnuSurround.Click += new System.EventHandler(this.mnuSurround_Click);
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -579,7 +577,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).EndInit();
             this.tblUtils.ResumeLayout(false);
             this.tblVolumn.ResumeLayout(false);
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -623,8 +620,7 @@
         private System.Windows.Forms.Label locVolumnMaxPoint;
         private System.Windows.Forms.Panel tblList;
         private System.Windows.Forms.PictureBox imgBass;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem mnuSurround;
+        private System.Windows.Forms.Button btnSrs;
     }
 }
 

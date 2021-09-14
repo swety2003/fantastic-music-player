@@ -216,7 +216,6 @@ namespace FantasticMusicPlayer
                         if (((i / 4) & 1) == 1)
                         {
                             byte d = data[i];
-                            //d = 0;
                             data[i] = delaybuffer[delayBufferPtr];
                             delaybuffer[delayBufferPtr] = d;
                             delayBufferPtr++;

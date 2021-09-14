@@ -175,6 +175,7 @@ namespace FantasticMusicPlayer
                 controller.LoopMode = Properties.Settings.Default.playmode;
                 controller.Shuffe = Properties.Settings.Default.shuffemode;
                 player.BassBoost = Properties.Settings.Default.bassboost;
+                player.SurroundSound = Properties.Settings.Default.surround;
                 SpectrumMode = Properties.Settings.Default.spectrummode;
                 try
                 {
@@ -206,6 +207,9 @@ namespace FantasticMusicPlayer
         Bitmap glowBall = new Bitmap(Properties.Resources.glow_ball);
         Bitmap currentBackground = null;
         Bitmap coverGlowing = new Bitmap(Properties.Resources.bg_glowing);
+
+        
+
 
         GraphicsLayer shadowLayer, backgroundLayer, gfxLayer, frameLayer, bottomControlLayer, topTextLayer, spectrumLayer, discDisplayBackLayer, discDisplayLayer;
         GraphicsLayer siderBackgroundLayer, siderForegroundLayer;
@@ -774,7 +778,10 @@ namespace FantasticMusicPlayer
         Bitmap spectrumDisable = new Bitmap(Properties.Resources.ic_spectrum_disable, 32, 32);
         Bitmap spectrumCenter = new Bitmap(Properties.Resources.ic_spectrum_center, 32, 32);
 
-        Bitmap bassBoostOn = new Bitmap(Properties.Resources.ic_fx, 32, 32);
+        Bitmap srsOn = new Bitmap(Properties.Resources.sr_on, 32, 32);
+        Bitmap srsOff = new Bitmap(Properties.Resources.sr_off, 32, 32);
+
+
 
         void updateSliderControl()
         {
@@ -856,7 +863,7 @@ namespace FantasticMusicPlayer
                 Bitmap spectrumMode = SpectrumMode == 0 ? spectrumDisable : (SpectrumMode == 1 ? spectrumBottom : spectrumCenter);
 
                 DrawUtils.drawAlphaImage(fg, spectrumMode, btnShuffe.Left + offsetx, btnSpectrumMode.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
-                DrawUtils.drawAlphaImage(fg, bassBoostOn , btnShuffe.Left + offsetx, btnPreserved2.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
+                DrawUtils.drawAlphaImage(fg, player.SurroundSound ? srsOn : srsOff , btnShuffe.Left + offsetx, btnSrs.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
 
 
 
@@ -1110,6 +1117,7 @@ namespace FantasticMusicPlayer
             Properties.Settings.Default.shuffemode = controller.Shuffe;
             Properties.Settings.Default.bassboost = player.BassBoost;
             Properties.Settings.Default.spectrummode = SpectrumMode;
+            Properties.Settings.Default.surround = player.SurroundSound;
             Properties.Settings.Default.Save();
             UnregisterHotKey(this.Handle, 2);
             UnregisterHotKey(this.Handle, 3);
@@ -1212,9 +1220,11 @@ namespace FantasticMusicPlayer
             }
         }
 
-        private void mnuSurround_Click(object sender, EventArgs e)
+
+        private void btnSrs_Click(object sender, EventArgs e)
         {
-            player.SurroundSound = mnuSurround.Checked;
+            player.SurroundSound = !player.SurroundSound;
+
         }
 
         IListAdapter currentlist = null;

@@ -145,6 +145,8 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="icon.ico" />
     <Content Include="Resources\fx.png" />
+    <None Include="Resources\sr_on.png" />
+    <None Include="Resources\sr_off.png" />
     <None Include="Resources\重低音.png" />
     <None Include="Resources\bass_fx.dll" />
     <None Include="Resources\bassboost_off.png" />
