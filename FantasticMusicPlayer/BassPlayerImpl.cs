@@ -69,8 +69,11 @@ namespace FantasticMusicPlayer
             BASS_SetConfig(BASSConfig.BASS_CONFIG_FLOATDSP, true);
             if (BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
-                updateTimer = new BASSTimer(1);
-                updateTimer.Tick += UpdateTimer_Tick;
+                if (updateTimer == null)
+                {
+                    updateTimer = new BASSTimer(1);
+                    updateTimer.Tick += UpdateTimer_Tick;
+                }
             }
             else {
                 BASSError berr = BASS_ErrorGetCode();
@@ -165,7 +168,7 @@ namespace FantasticMusicPlayer
             else { 
                 CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(Properties.Resources.default_cover), true));
             }
-            currentPlaying = BASS_StreamCreateFile(filename, 0, 0, BASSFlag.BASS_DEFAULT | BASSFlag.BASS_STREAM_PRESCAN);
+            currentPlaying = BASS_StreamCreateFile(filename, 0, 0, BASSFlag.BASS_DEFAULT);
             if (currentPlaying == 0) {
                 System.Windows.Forms.MessageBox.Show(BASS_ErrorGetCode().ToString(),"播放失败");
                 Stopped?.Invoke(this, EventArgs.Empty);

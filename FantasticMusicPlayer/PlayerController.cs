@@ -22,11 +22,11 @@ namespace FantasticMusicPlayer
                 shuffeForwardLog.Clear();
             }
         }
-        public List<PlayList> AllPlayList { get; }
+        public List<PlayList> AllPlayList { get => PlayListProvider.PlayLists; }
         public List<SongEntry> SongInList { get; }
         Random rnd = new Random();
         void prev() {
-            if (Shuffe) {
+            if (Shuffe && CurrentList.Songs.Count >0) {
                 shuffeForwardLog.push(CurrentPlaying);
 
                 SongEntry prev = null;
@@ -47,7 +47,7 @@ namespace FantasticMusicPlayer
             songptr--;
             if (songptr < 0)
             {
-                if (LoopMode == 0)
+                if (LoopMode == 0 || CurrentList.Songs.Count<1)
                 {
                     do
                     {
@@ -102,7 +102,7 @@ namespace FantasticMusicPlayer
         }
 
         void next() {
-            if (Shuffe)
+            if (Shuffe && CurrentList.Songs.Count >0)
             {
                 shuffeBackLog.push(CurrentPlaying);
                 SongEntry next = null;
@@ -126,7 +126,7 @@ namespace FantasticMusicPlayer
 
                 songptr = 0;
 
-                if (LoopMode == 0) {
+                if (LoopMode == 0 || CurrentList.Songs.Count<1) {
                     do
                     {
                         listptr++;
@@ -165,7 +165,6 @@ namespace FantasticMusicPlayer
 
         public PlayerController(IPlayListProvider playlistProvider) {
             this.PlayListProvider = playlistProvider;
-            AllPlayList = playlistProvider.PlayLists;
 
             if (playlistProvider.GetTotalSongCount() > 0)
             {

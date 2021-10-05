@@ -28,16 +28,24 @@ namespace FantasticMusicPlayer.dbo.Model
         public override bool Equals(object obj)
         {
             return obj is SongEntry entry &&
-                   ID == entry.ID &&
-                   Path == entry.Path;
+                   getRelativePath() == entry.getRelativePath();
         }
 
         public override int GetHashCode()
         {
             int hashCode = 867923638;
-            hashCode = hashCode * -1521134295 + ID.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Path);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(getRelativePath());
             return hashCode;
+        }
+
+        public string getRelativePath() {
+            String path = System.IO.Path.GetFullPath(Path);
+            path = path.Replace(System.IO.Path.GetFullPath("."), "").Replace(System.IO.Path.DirectorySeparatorChar, '/');
+            if (path.StartsWith("/"))
+            {
+                path = path.Substring(1);
+            }
+            return path;
         }
     }
 }

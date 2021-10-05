@@ -233,6 +233,26 @@ namespace FantasticMusicPlayer.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap heart {
+            get {
+                object obj = ResourceManager.GetObject("heart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap heart_fill {
+            get {
+                object obj = ResourceManager.GetObject("heart_fill", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap hiresaudio {
             get {
                 object obj = ResourceManager.GetObject("hiresaudio", resourceCulture);
@@ -316,6 +336,16 @@ namespace FantasticMusicPlayer.Properties {
         internal static System.Drawing.Bitmap ic_play {
             get {
                 object obj = ResourceManager.GetObject("ic_play", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap ic_playlist {
+            get {
+                object obj = ResourceManager.GetObject("ic_playlist", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

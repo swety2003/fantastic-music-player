@@ -145,6 +145,9 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="icon.ico" />
     <Content Include="Resources\fx.png" />
+    <None Include="Resources\heart.png" />
+    <None Include="Resources\heart_fill.png" />
+    <None Include="Resources\ic_folder_next.png" />
     <None Include="Resources\sr_on.png" />
     <None Include="Resources\sr_off.png" />
     <None Include="Resources\重低音.png" />

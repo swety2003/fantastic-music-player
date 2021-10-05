@@ -24,7 +24,7 @@ namespace FantasticMusicPlayer.dbo.Model
                 Songs.Add(item);
             }
         }
-        public List<SongEntry> Songs { get; set; } = new List<SongEntry>();
+        public virtual List<SongEntry> Songs { get; set; } = new List<SongEntry>();
  
         public override bool Equals(object obj)
         {

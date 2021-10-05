@@ -57,8 +57,9 @@ namespace FantasticMusicPlayer
                 Text = e.title;
                 imgHiResAudio.Enabled = e.HiResAudio;
             });
+            checkFavStatus();
             updateTopControl();
-
+           
 
         }
 
@@ -710,7 +711,10 @@ namespace FantasticMusicPlayer
 
         float dec2log(float x) => x == 0 ? 0 : Math.Max(0, (float)(Math.Log10(x * 10000) / 4));
 
-        
+
+
+        private Bitmap imgFavOn = new Bitmap(Properties.Resources.heart_fill,28,28);
+        private Bitmap imgFavOff = new Bitmap(Properties.Resources.heart,28,28);
 
         void updateTopControl()
         {
@@ -724,11 +728,11 @@ namespace FantasticMusicPlayer
                 {
                     g.DrawImage(imgHiResAudio.Image, new Rectangle(imgHiResAudio.Location, imgHiResAudio.Size));
                 }
-                if (imgBass.Enabled)
-                {
-                    g.DrawImage(imgBass.Image, new Rectangle(imgBass.Location, imgBass.Size));
-                }
+                
+                g.DrawImage(isFavChecked ? imgFavOn : imgFavOff, new Rectangle(imgBass.Location, imgBass.Size));
+                
                 topTextLayer.UpdateWindow();
+                
             }
         }
 
@@ -1227,6 +1231,42 @@ namespace FantasticMusicPlayer
 
         }
 
+
+        public bool isFavChecked = false;
+        void checkFavStatus() {
+            isFavChecked = favourite.Songs.Contains(controller.CurrentPlaying);
+        }
+
+        private VirtualDir favourite = new VirtualDir("收藏",Path.GetFullPath("收藏.pl"),Path.GetFullPath("."));
+
+        
+
+        private void btnFav_Click(object sender, EventArgs e)
+        {
+            if (!isFavChecked)
+            {
+                List<SongEntry> refSongs = favourite.Songs;
+                refSongs.Add(controller.CurrentPlaying);
+                favourite.save();
+
+                if (controller.PlayListProvider is CurrentDirectorySongProvider) {
+                    ((CurrentDirectorySongProvider)controller.PlayListProvider).UpdatePlaylist();
+                }
+            }
+            else {
+                List<SongEntry> refSongs = favourite.Songs;
+                refSongs.Remove(controller.CurrentPlaying);
+                favourite.save();
+
+                if (controller.PlayListProvider is CurrentDirectorySongProvider)
+                {
+                    ((CurrentDirectorySongProvider)controller.PlayListProvider).UpdatePlaylist();
+                }
+            }
+            checkFavStatus();
+            updateTopControl();
+        }
+
         IListAdapter currentlist = null;
 
         interface IListAdapter {
@@ -1249,13 +1289,14 @@ namespace FantasticMusicPlayer
             Brush yellow = Brushes.Yellow;
 
             Bitmap playlistImg = new Bitmap(Properties.Resources.img_folder,26,26);
+            Bitmap playlistImg2 = new Bitmap(Properties.Resources.ic_playlist,26,26);
 
             public void drawItem(Graphics g, int position, float bx, float by, float w, float h, bool clicked)
             {
                 RectangleF textRect = new RectangleF(bx + 36, by, w - 36, h);
                 PlayList pl = (PlayList)getItem(position);
                 g.DrawString(pl.Name, _this.lblArtsit.Font, pl==_this.controller.CurrentList ? yellow : white, textRect, _this.alignLeft);
-                g.DrawImage(playlistImg, 3, 3+by);
+                g.DrawImage(pl is VirtualDir ? playlistImg2 : playlistImg, 3, 3+by);
                 if (clicked) {
                     _this.hideList(() => _this.showList(new SongAdapter(_this, pl)));
                 }

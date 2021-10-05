@@ -55,8 +55,8 @@
             this.infoTimer = new System.Windows.Forms.Timer(this.components);
             this.locSpectrumArea = new System.Windows.Forms.Label();
             this.tblTopInfo = new System.Windows.Forms.Panel();
-            this.imgBass = new System.Windows.Forms.PictureBox();
             this.imgHiResAudio = new System.Windows.Forms.PictureBox();
+            this.imgBass = new System.Windows.Forms.PictureBox();
             this.tblUtils = new System.Windows.Forms.Panel();
             this.btnSrs = new System.Windows.Forms.Button();
             this.btnSpectrumMode = new System.Windows.Forms.Button();
@@ -66,12 +66,13 @@
             this.locVolumeMinPoint = new System.Windows.Forms.Label();
             this.locVolumnMaxPoint = new System.Windows.Forms.Label();
             this.tblList = new System.Windows.Forms.Panel();
+            this.btnFav = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
             this.tblTopInfo.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).BeginInit();
             this.tblUtils.SuspendLayout();
             this.tblVolumn.SuspendLayout();
             this.SuspendLayout();
@@ -100,7 +101,7 @@
             this.lblTitle.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.Location = new System.Drawing.Point(49, 2);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(618, 24);
+            this.lblTitle.Size = new System.Drawing.Size(573, 24);
             this.lblTitle.TabIndex = 3;
             this.lblTitle.Text = "label1";
             this.lblTitle.Visible = false;
@@ -110,7 +111,7 @@
             this.lblArtsit.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblArtsit.Location = new System.Drawing.Point(51, 27);
             this.lblArtsit.Name = "lblArtsit";
-            this.lblArtsit.Size = new System.Drawing.Size(618, 17);
+            this.lblArtsit.Size = new System.Drawing.Size(571, 17);
             this.lblArtsit.TabIndex = 3;
             this.lblArtsit.Text = "label1";
             this.lblArtsit.Visible = false;
@@ -389,27 +390,15 @@
             // tblTopInfo
             // 
             this.tblTopInfo.BackColor = System.Drawing.Color.Transparent;
-            this.tblTopInfo.Controls.Add(this.imgBass);
             this.tblTopInfo.Controls.Add(this.imgHiResAudio);
             this.tblTopInfo.Controls.Add(this.lblTitle);
             this.tblTopInfo.Controls.Add(this.lblArtsit);
+            this.tblTopInfo.Controls.Add(this.imgBass);
             this.tblTopInfo.Location = new System.Drawing.Point(10, 3);
             this.tblTopInfo.Name = "tblTopInfo";
-            this.tblTopInfo.Size = new System.Drawing.Size(671, 52);
+            this.tblTopInfo.Size = new System.Drawing.Size(678, 52);
             this.tblTopInfo.TabIndex = 10;
             this.tblTopInfo.Visible = false;
-            // 
-            // imgBass
-            // 
-            this.imgBass.Enabled = false;
-            this.imgBass.Image = global::FantasticMusicPlayer.Properties.Resources.bassboost;
-            this.imgBass.Location = new System.Drawing.Point(625, 2);
-            this.imgBass.Name = "imgBass";
-            this.imgBass.Size = new System.Drawing.Size(42, 42);
-            this.imgBass.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.imgBass.TabIndex = 11;
-            this.imgBass.TabStop = false;
-            this.imgBass.Visible = false;
             // 
             // imgHiResAudio
             // 
@@ -421,6 +410,18 @@
             this.imgHiResAudio.TabIndex = 11;
             this.imgHiResAudio.TabStop = false;
             this.imgHiResAudio.Visible = false;
+            // 
+            // imgBass
+            // 
+            this.imgBass.Enabled = false;
+            this.imgBass.Image = global::FantasticMusicPlayer.Properties.Resources.bassboost;
+            this.imgBass.Location = new System.Drawing.Point(638, 11);
+            this.imgBass.Name = "imgBass";
+            this.imgBass.Size = new System.Drawing.Size(28, 28);
+            this.imgBass.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.imgBass.TabIndex = 11;
+            this.imgBass.TabStop = false;
+            this.imgBass.Visible = false;
             // 
             // tblUtils
             // 
@@ -538,6 +539,21 @@
             this.tblList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listMouseMove);
             this.tblList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listMouseUp);
             // 
+            // btnFav
+            // 
+            this.btnFav.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnFav.Location = new System.Drawing.Point(643, 7);
+            this.btnFav.Name = "btnFav";
+            this.btnFav.Size = new System.Drawing.Size(40, 40);
+            this.btnFav.TabIndex = 5;
+            this.btnFav.Text = "Fav";
+            this.btnFav.UseVisualStyleBackColor = true;
+            this.btnFav.Click += new System.EventHandler(this.btnFav_Click);
+            this.btnFav.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
+            this.btnFav.MouseEnter += new System.EventHandler(this.sfxAttaker);
+            this.btnFav.MouseLeave += new System.EventHandler(this.sfxReleaser);
+            this.btnFav.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -547,15 +563,16 @@
             this.Controls.Add(this.tblList);
             this.Controls.Add(this.tblUtils);
             this.Controls.Add(this.tblVolumn);
-            this.Controls.Add(this.tblTopInfo);
             this.Controls.Add(this.locSpectrumArea);
             this.Controls.Add(this.locButtonBlur);
             this.Controls.Add(this.locSpectrum);
             this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.btnFav);
             this.Controls.Add(this.btnMin);
             this.Controls.Add(this.locMask);
             this.Controls.Add(this.locGlowing);
             this.Controls.Add(this.tblBottomControl);
+            this.Controls.Add(this.tblTopInfo);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form1";
@@ -573,8 +590,8 @@
             this.tblBottomControl.ResumeLayout(false);
             this.tblBottomControl.PerformLayout();
             this.tblTopInfo.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgHiResAudio)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBass)).EndInit();
             this.tblUtils.ResumeLayout(false);
             this.tblVolumn.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -621,6 +638,7 @@
         private System.Windows.Forms.Panel tblList;
         private System.Windows.Forms.PictureBox imgBass;
         private System.Windows.Forms.Button btnSrs;
+        private System.Windows.Forms.Button btnFav;
     }
 }
 
