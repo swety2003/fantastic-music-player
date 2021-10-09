@@ -9,6 +9,9 @@ namespace FantasticMusicPlayer.dbo.Model
     public class PlayList
     {
         private Guid Guid { get; } = Guid.NewGuid();
+
+        public Guid GetUid() { return Guid; }
+
         public int ID { get; set; } = 0;
         public String Name { get; set; }
 

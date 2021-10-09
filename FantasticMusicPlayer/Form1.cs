@@ -1387,6 +1387,7 @@ namespace FantasticMusicPlayer
         {
             Form1 _this;
             PlayList usingList;
+            private bool showshuffed = false;
             public SongAdapter(Form1 @this,PlayList pl)
             {
                 _this = @this;
@@ -1419,6 +1420,7 @@ namespace FantasticMusicPlayer
 
             public object getItem(int position)
             {
+                
                 return usingList.Songs[position];
             }
 
@@ -1483,18 +1485,21 @@ namespace FantasticMusicPlayer
                 else {
                     hideList(() =>
                     {
-                        showList(new SongAdapter(this, controller.CurrentList));
-                        position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
-                        velotry = 0.01f;
+                        actualShowSongList();
+
                     });
                 }
             }
             else
             {
-                showList(new SongAdapter(this,controller.CurrentList));
-                position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
-                velotry = 0.01f;
+                actualShowSongList();
             }
+        }
+
+        private void actualShowSongList() {
+            showList(new SongAdapter(this, controller.CurrentList));
+            position = controller.CurrentList.Songs.IndexOf(controller.CurrentPlaying) - 5;
+            velotry = 0.01f;
         }
 
         [DllImport("user32.dll")]

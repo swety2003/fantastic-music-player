@@ -18,8 +18,6 @@ namespace FantasticMusicPlayer
             set
             {
                 PlayListProvider.LastPlayList = value;
-                shuffeBackLog.Clear();
-                shuffeForwardLog.Clear();
             }
         }
         public List<PlayList> AllPlayList { get => PlayListProvider.PlayLists; }
@@ -27,17 +25,19 @@ namespace FantasticMusicPlayer
         Random rnd = new Random();
         void prev() {
             if (Shuffe && CurrentList.Songs.Count >0) {
-                shuffeForwardLog.push(CurrentPlaying);
+                shuffePtr--;
+                shuffedPlayed--;
+                if ((-shuffedPlayed) >= shuffedSongs.Count)
+                {
+                    resetShuffe();
+                    shuffeList(shuffedSongs);
+                }
+                if (shuffePtr < 0)
+                {
+                    shuffePtr = shuffedSongs.Count-1;
+                }
 
-                SongEntry prev = null;
-                if (shuffeBackLog.pop(out prev))
-                {
-                    CurrentPlaying = prev;
-                }
-                else
-                {
-                    CurrentPlaying = CurrentList.Songs[rnd.Next(CurrentList.Songs.Count)];
-                }
+                CurrentPlaying = shuffedSongs[shuffePtr];
                 changeSong(CurrentPlaying);
                 return;
             }
@@ -62,58 +62,20 @@ namespace FantasticMusicPlayer
             changeSong(CurrentPlaying);
         }
 
-        SongEntry pollRandomNext()
-        {
-            if (CurrentList.Songs.Count>3)
-            {
-                SongEntry se = null;
-                bool valid = false;
-                while (!valid)
-                {
-                    se = CurrentList.Songs[rnd.Next(0, CurrentList.Songs.Count)];
-                    int count = CurrentList.Songs.Count / 2;
-                    int begin = shuffeBackLog.InnerList.Count - count;
-                    if (begin < 0)
-                    {
-                        begin = 0;
-                    }
-                    valid = true;
-                    for (int i = begin; i < shuffeBackLog.InnerList.Count; i++)
-                    {
-                        if (shuffeBackLog.InnerList[i].Equals(se))
-                        {
-                            valid = false;
-                            break;
-                        }
-                    }
-                }
-                return se;
-            }
-            else
-            {
-                int idx = CurrentList.Songs.IndexOf(CurrentPlaying);
-                idx++;
-                if (idx >= CurrentList.Songs.Count)
-                {
-                    idx = 0;
-                }
-                return CurrentList.Songs[idx];
-            }
-        }
-
         void next() {
             if (Shuffe && CurrentList.Songs.Count >0)
             {
-                shuffeBackLog.push(CurrentPlaying);
-                SongEntry next = null;
-                if (shuffeForwardLog.pop(out next))
-                {
-                    CurrentPlaying = next;
+                shuffePtr++;
+                shuffedPlayed++;
+                if (shuffedPlayed >= shuffedSongs.Count) {
+                    resetShuffe(); 
+                    shuffeList(shuffedSongs);
                 }
-                else
+                if (shuffePtr >= shuffedSongs.Count)
                 {
-                    CurrentPlaying = pollRandomNext();
+                    shuffePtr = 0;
                 }
+                CurrentPlaying = shuffedSongs[shuffePtr];
                 changeSong(CurrentPlaying);
                 return;
             }
@@ -141,9 +103,6 @@ namespace FantasticMusicPlayer
 
         private bool HasSong = false;
 
-        SizedStack<SongEntry> shuffeBackLog = new SizedStack<SongEntry>(80);
-        SizedStack<SongEntry> shuffeForwardLog = new SizedStack<SongEntry>(20);
-
         /// <summary>
         /// 0 - 全部播放 1 - 单曲循环 2 - 列表循环
         /// </summary>
@@ -153,12 +112,48 @@ namespace FantasticMusicPlayer
             }
         }
 
+        private List<SongEntry> shuffedSongs = new List<SongEntry>();
+        private int shuffePtr = 0;
+        private int shuffedPlayed = 0;
+
+        private void resetShuffe() {
+            shuffedSongs.Clear();
+            shuffedPlayed = 0;
+            shuffePtr = 0;
+            if (CurrentList != null)
+            {
+                shuffedSongs.AddRange(CurrentList.Songs);
+                shuffeList(shuffedSongs);
+                if (CurrentPlaying != null)
+                {
+                    int current = shuffedSongs.IndexOf(CurrentPlaying);
+                    swapListItem(shuffedSongs, 0, current);
+                }
+            }
+        }
+
+        public List<SongEntry> ShuffedPlaylist { get { return shuffedSongs; } }
+
+        private void shuffeList<T>(List<T> list) {
+            Random rnd = new Random();
+            for (int i = 0; i < list.Count - 1; i++)
+            {
+                swapListItem(list, i, i + rnd.Next(list.Count - 1 - i) + 1);
+            }
+        }
+
+        private void swapListItem<T>(List<T> list,int i1,int i2) {
+            if (i1 == i2) { return; }
+            T item = list[i1];
+            list[i1] = list[i2];
+            list[i2] = item;
+        }
+
         private bool _shuffe = false;
         public bool Shuffe { get=>_shuffe; set {
                 _shuffe = value;
                 if (value) {
-                    shuffeBackLog.Clear();
-                    shuffeForwardLog.Clear();
+                    resetShuffe();
                 }
             } 
         }
@@ -178,8 +173,8 @@ namespace FantasticMusicPlayer
         }
 
         public void ImReady() {
-            if (_shuffe) { 
-                
+            if (_shuffe) {
+                resetShuffe();
             }
             changeSong(CurrentPlaying);
         }
