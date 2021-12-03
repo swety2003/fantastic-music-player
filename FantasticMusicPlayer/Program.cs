@@ -57,7 +57,7 @@ namespace FantasticMusicPlayer
         {
             checkLibrary();
             #if DEBUG
-            //Environment.CurrentDirectory = "Q:\\MP3Player";
+            Environment.CurrentDirectory = "Q:\\MP3Player";
 #endif
             if (!File.Exists("收藏.pl")) { File.Create("收藏.pl").Dispose(); }
             Application.EnableVisualStyles();

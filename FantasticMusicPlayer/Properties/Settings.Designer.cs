@@ -89,13 +89,13 @@ namespace FantasticMusicPlayer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool surround {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int dsptype {
             get {
-                return ((bool)(this["surround"]));
+                return ((int)(this["dsptype"]));
             }
             set {
-                this["surround"] = value;
+                this["dsptype"] = value;
             }
         }
     }

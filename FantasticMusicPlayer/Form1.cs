@@ -176,7 +176,16 @@ namespace FantasticMusicPlayer
                 controller.LoopMode = Properties.Settings.Default.playmode;
                 controller.Shuffe = Properties.Settings.Default.shuffemode;
                 player.BassBoost = Properties.Settings.Default.bassboost;
-                player.SurroundSound.Enabled = Properties.Settings.Default.surround;
+                int dspType = Properties.Settings.Default.dsptype;
+                this.dsptype = dspType;
+                if(dspType == 1)
+                {
+                    ((DspSwitcher)player.SurroundSound).WrappedDSP = new SurroundDSP();
+                }
+                if (dspType == 2)
+                {
+                    ((DspSwitcher)player.SurroundSound).WrappedDSP = new SpeakerInRoomDSP();
+                }
                 SpectrumMode = Properties.Settings.Default.spectrummode;
                 try
                 {
@@ -783,9 +792,10 @@ namespace FantasticMusicPlayer
         Bitmap spectrumCenter = new Bitmap(Properties.Resources.ic_spectrum_center, 32, 32);
 
         Bitmap srsOn = new Bitmap(Properties.Resources.sr_on, 32, 32);
+        Bitmap rsrOn = new Bitmap(Properties.Resources.rs_on, 32, 32);
         Bitmap srsOff = new Bitmap(Properties.Resources.sr_off, 32, 32);
 
-
+        int dsptype = 0;
 
         void updateSliderControl()
         {
@@ -867,7 +877,12 @@ namespace FantasticMusicPlayer
                 Bitmap spectrumMode = SpectrumMode == 0 ? spectrumDisable : (SpectrumMode == 1 ? spectrumBottom : spectrumCenter);
 
                 DrawUtils.drawAlphaImage(fg, spectrumMode, btnShuffe.Left + offsetx, btnSpectrumMode.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
-                DrawUtils.drawAlphaImage(fg, player.SurroundSound.Enabled ? srsOn : srsOff , btnShuffe.Left + offsetx, btnSrs.Top, btnLoopMode.Width, btnLoopMode.Height, alpha);
+
+                if (dsptype == 0) { DrawUtils.drawAlphaImage(fg, srsOff , btnShuffe.Left + offsetx, btnSrs.Top, btnLoopMode.Width, btnLoopMode.Height, alpha); }
+                if (dsptype == 1) { DrawUtils.drawAlphaImage(fg, srsOn, btnShuffe.Left + offsetx, btnSrs.Top, btnLoopMode.Width, btnLoopMode.Height, alpha); }
+                if (dsptype == 2) { DrawUtils.drawAlphaImage(fg, rsrOn, btnShuffe.Left + offsetx, btnSrs.Top, btnLoopMode.Width, btnLoopMode.Height, alpha); }
+                
+                
 
 
 
@@ -1121,7 +1136,7 @@ namespace FantasticMusicPlayer
             Properties.Settings.Default.shuffemode = controller.Shuffe;
             Properties.Settings.Default.bassboost = player.BassBoost;
             Properties.Settings.Default.spectrummode = SpectrumMode;
-            Properties.Settings.Default.surround = player.SurroundSound.Enabled;
+            Properties.Settings.Default.dsptype = this.dsptype;
             Properties.Settings.Default.Save();
             UnregisterHotKey(this.Handle, 2);
             UnregisterHotKey(this.Handle, 3);
@@ -1227,8 +1242,22 @@ namespace FantasticMusicPlayer
 
         private void btnSrs_Click(object sender, EventArgs e)
         {
-            player.SurroundSound.Enabled = !player.SurroundSound.Enabled;
+            dsptype++;
+            if (dsptype > 2) { dsptype = 0; }
+            if (dsptype == 0)
+            {
+                ((DspSwitcher)player.SurroundSound).WrappedDSP = null;
+            }
+            if (dsptype == 1)
+            {
+                ((DspSwitcher)player.SurroundSound).WrappedDSP = new SurroundDSP();
+            }
+            if (dsptype == 2)
+            {
+                ((DspSwitcher)player.SurroundSound).WrappedDSP = new SpeakerInRoomDSP();
+            }
 
+            
         }
 
 

@@ -7,6 +7,40 @@ using Un4seen.Bass;
 
 namespace FantasticMusicPlayer
 {
+    public class DspSwitcher : DSPClass
+    {
+        private int sampleRate=44100, channels=2, bitdepth=4;
+
+        private DSPClass wrappedDSP = null;
+        public override void init(int sampleRate, int channels, int bitdepth = 4)
+        {
+            this.sampleRate = sampleRate;
+            this.channels = channels;
+            this.bitdepth = bitdepth;
+            wrappedDSP?.init(sampleRate, channels, bitdepth);
+        }
+
+
+        public DSPClass WrappedDSP
+        {
+            get
+            {
+                return wrappedDSP;
+            }
+            set
+            {
+                wrappedDSP = value;
+                value?.init(sampleRate, channels, bitdepth);
+            }
+        }
+
+        public override unsafe void processAudio(float* buffer, int len)
+        {
+            wrappedDSP?.processAudio(buffer, len);
+        }
+    }
+
+
     public class SpeakerInRoomDSP : DSPClass
     {
         const int sideDelay_us = 429;
@@ -17,7 +51,7 @@ namespace FantasticMusicPlayer
         public override void init(int sampleRate, int channels, int bitdepth = 4)
         {
             canSurround = false;
-            int bufferLen = sampleRate / 2000;
+            int bufferLen = sampleRate / 1000;
             if(bufferLen > 0 && channels == 2)
             {
                 canSurround = true;
@@ -109,7 +143,7 @@ namespace FantasticMusicPlayer
 
     public abstract class DSPClass
     {
-        public bool Enabled { get; set; } = true;
+        public virtual bool Enabled { get; set; } = true;
         public DSPPROC DspDelegate { get; private set; }
         public DSPClass()
         {

@@ -463,6 +463,16 @@ namespace FantasticMusicPlayer.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap rs_on {
+            get {
+                object obj = ResourceManager.GetObject("rs_on", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap sr_off {
             get {
                 object obj = ResourceManager.GetObject("sr_off", resourceCulture);

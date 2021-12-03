@@ -191,7 +191,7 @@ namespace FantasticMusicPlayer
             updateTimer.Start();
         }
 
-        public DSPClass SurroundSound = new SpeakerInRoomDSP();
+        public DSPClass SurroundSound = new DspSwitcher();
 
 
         int fxgainparam = 0;
