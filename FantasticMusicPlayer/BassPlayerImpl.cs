@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
@@ -180,59 +181,17 @@ namespace FantasticMusicPlayer
             BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
             BASS_CHANNELINFO info = new BASS_CHANNELINFO();
             BASS_ChannelGetInfo(currentPlaying, info);
-            samplerate = info.freq;
-            channels = info.chans;
-            canProcSurround = bitdepth > 0 && samplerate > 0 && channels==2;
-            
-            if (surroundProc == null) {
-                surroundProc = new DSPPROC(surroundSoundDspProc);
-            }
-            if (canProcSurround) {
-                delaybuffer = new byte[samplerate / 200 * bitdepth];
-                Console.WriteLine("Using buffer size " + delaybuffer.Length);
-                BASS_ChannelSetDSP(currentPlaying, surroundProc, IntPtr.Zero, 50);
-            }
+            int samplerate = info.freq;
+            int channels = info.chans;
+
+            SurroundSound.init(samplerate, channels);
+
+            BASS_ChannelSetDSP(currentPlaying, SurroundSound.DspDelegate, IntPtr.Zero, 30);
             loading = false;
             updateTimer.Start();
         }
 
-
-        public bool SurroundSound = false;
-        private int samplerate;
-        private int channels = 2;
-        private byte[] delaybuffer;
-        private int bitdepth = 4;
-        private int delayBufferPtr = 0;
-        private DSPPROC surroundProc;
-        private bool canProcSurround = true;
-
-        private void surroundSoundDspProc(int handle, int channel, IntPtr buffer, int bufferlen, IntPtr user) {
-            if (bufferlen == 0 || buffer == IntPtr.Zero || (!(SurroundSound && canProcSurround))) {
-                return;
-            }
-            unsafe
-            {
-                byte* data = (byte*)buffer;
-                
-                    for (int i = 0; i < bufferlen; i++)
-                    {
-                        if (((i / 4) & 1) == 1)
-                        {
-                            byte d = data[i];
-                            data[i] = delaybuffer[delayBufferPtr];
-                            delaybuffer[delayBufferPtr] = d;
-                            delayBufferPtr++;
-                            if (delayBufferPtr >= delaybuffer.Length)
-                            {
-                                delayBufferPtr = 0;
-                            }
-                        }
-                    }
-                
-            }
-
-        }
-
+        public DSPClass SurroundSound = new SpeakerInRoomDSP();
 
 
         int fxgainparam = 0;

@@ -93,6 +93,7 @@
     <Compile Include="dbo\Model\PlayList.cs" />
     <Compile Include="dbo\Model\Setting.cs" />
     <Compile Include="dbo\Model\SongEntry.cs" />
+    <Compile Include="DspUtils.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
