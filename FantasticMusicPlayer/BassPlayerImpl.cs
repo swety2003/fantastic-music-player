@@ -178,7 +178,7 @@ namespace FantasticMusicPlayer
             Looping = Looping;
             initFx();
             applyFxStatus();
-            BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
+            //BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);
             BASS_CHANNELINFO info = new BASS_CHANNELINFO();
             BASS_ChannelGetInfo(currentPlaying, info);
             int samplerate = info.freq;

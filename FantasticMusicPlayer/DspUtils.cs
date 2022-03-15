@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
+using NAudio.Dsp;
 
 namespace FantasticMusicPlayer
 {
@@ -47,17 +48,21 @@ namespace FantasticMusicPlayer
         bool canSurround = false;
         RingBuffer leftBuffer = null;
         RingBuffer rightBuffer = null;
-
+        BiQuadFilter crossInFilterL;
+        BiQuadFilter crossInFilterR;
         public override void init(int sampleRate, int channels, int bitdepth = 4)
         {
             canSurround = false;
-            int bufferLen = sampleRate / 1000;
+            int bufferLen = (int)(0.32 / 1000 * sampleRate);
             if(bufferLen > 0 && channels == 2)
             {
                 canSurround = true;
                 leftBuffer = new RingBuffer(bufferLen);
                 rightBuffer = new RingBuffer(bufferLen);
+                crossInFilterL = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -18);
+                crossInFilterR = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -18);
             }
+            this.CrossIn = 0.6f;
         }
         public float CrossIn { 
             get {
@@ -79,8 +84,10 @@ namespace FantasticMusicPlayer
                 {
                     float l = buffer[i];
                     float r = buffer[i+1];
-                    buffer[i] = l * mainWeight + rightBuffer.pop(r) * subWeight;
-                    buffer[i + 1] = r * mainWeight + leftBuffer.pop(l) * subWeight;
+
+
+                    buffer[i] = l * mainWeight + crossInFilterL.Transform(rightBuffer.pop(r)) * subWeight;
+                    buffer[i + 1] = r * mainWeight + crossInFilterR.Transform(leftBuffer.pop(l)) * subWeight;
                 }
             }
         }

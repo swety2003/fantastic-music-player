@@ -65,6 +65,9 @@
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bass.Net, Version=2.4.14.1, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -102,6 +105,7 @@
     </Compile>
     <Compile Include="IBassPlayer.cs" />
     <Compile Include="IPlayListProvider.cs" />
+    <Compile Include="lib\BiQuadFilter.cs" />
     <Compile Include="lib\GuassionBlur.cs" />
     <Compile Include="lib\IconMaker.cs" />
     <Compile Include="lib\MyGdiFramework.cs" />
@@ -122,6 +126,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
