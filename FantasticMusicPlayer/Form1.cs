@@ -495,7 +495,8 @@ namespace FantasticMusicPlayer
         void updateBottomControl()
         {
             numProgress.Maximum = (int)player.TotalPosition;
-            numProgress.Value = (int)player.CurrentPosition;
+            
+            numProgress.Value = (int)(player.CurrentPosition >= numProgress.Maximum ? numProgress.Maximum : player.CurrentPosition);
 
 
             lock (white)

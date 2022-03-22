@@ -19,6 +19,11 @@ namespace FantasticMusicPlayer
             EnumrateDir(rootPath);
             unfilteredPlaylist = _playlists;
             _playlists = unfilteredPlaylist.Where(p => p.Songs.Count > 0).ToList();
+            if(_playlists.Count == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("当前文件夹下没有找到音乐文件。");
+                Environment.Exit(1);
+            }
         }
 
         List<String> availableExtenstions = new List<string>(new string[] {".mp3",".wav",".flac",".ape",".aac"});

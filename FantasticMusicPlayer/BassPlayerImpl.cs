@@ -199,10 +199,18 @@ namespace FantasticMusicPlayer
         private List<int> appliedFx = new List<int>();
         private List<FxObject> fxobjects = new List<FxObject>();
         private float baseGAIN = 1;
-        
+
+        //private int FxReverbHandle = 0;
+
         void initFx() {
              fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
              fxvolume =  Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+             //FxReverbHandle = Bass.BASS_ChannelSetFX(currentPlaying,BASSFXType.BASS_FX_BFX_FREEVERB,1);
+             //BASS_BFX_FREEVERB reverbParam = new BASS_BFX_FREEVERB();
+             //reverbParam.fRoomSize = 0.6f;
+             //reverbParam.fDryMix = 0.6f;
+             //reverbParam.fWetMix = 0.4f;
+             //Bass.BASS_FXSetParameters(FxReverbHandle,reverbParam);
              BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
              param3.fGain = baseGAIN;
              Bass.BASS_FXSetParameters(fxgainparam, param3);
