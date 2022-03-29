@@ -1,7 +1,8 @@
 # fantastic-music-player
 
 #### 介绍
-Music player with a fancy ui, powered by bass.dll
+界面看起来还不错的音乐播发器, 基于 bass.dll 开发
+获取： https://gitee.com/ZYFDroid/fantastic-music-player/releases/
 
 ![image](images/preview1.png)
 
