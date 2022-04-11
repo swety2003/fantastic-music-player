@@ -59,10 +59,10 @@ namespace FantasticMusicPlayer
                 canSurround = true;
                 leftBuffer = new RingBuffer(bufferLen);
                 rightBuffer = new RingBuffer(bufferLen);
-                crossInFilterL = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -18);
-                crossInFilterR = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -18);
+                crossInFilterL = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
+                crossInFilterR = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
             }
-            this.CrossIn = 0.6f;
+            this.CrossIn = 0.57f;
         }
         public float CrossIn { 
             get {
