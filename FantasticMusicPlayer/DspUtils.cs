@@ -49,7 +49,9 @@ namespace FantasticMusicPlayer
         RingBuffer leftBuffer = null;
         RingBuffer rightBuffer = null;
         BiQuadFilter crossInFilterL;
+        BiQuadFilter crossInFilterL2;
         BiQuadFilter crossInFilterR;
+        BiQuadFilter crossInFilterR2;
         public override void init(int sampleRate, int channels, int bitdepth = 4)
         {
             canSurround = false;
@@ -60,7 +62,9 @@ namespace FantasticMusicPlayer
                 leftBuffer = new RingBuffer(bufferLen);
                 rightBuffer = new RingBuffer(bufferLen);
                 crossInFilterL = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
+                crossInFilterL2 = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, 3);
                 crossInFilterR = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
+                crossInFilterR2 = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, 3);
             }
             this.CrossIn = 0.57f;
         }
@@ -82,8 +86,8 @@ namespace FantasticMusicPlayer
             {
                 for (int i = 0; i < len; i+=2)
                 {
-                    float l = buffer[i];
-                    float r = buffer[i+1];
+                    float l = crossInFilterL2.Transform(buffer[i]);
+                    float r = crossInFilterR2.Transform(buffer[i+1]);
 
 
                     buffer[i] = l * mainWeight + crossInFilterL.Transform(rightBuffer.pop(r)) * subWeight;
