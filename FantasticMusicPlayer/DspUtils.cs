@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Un4seen.Bass;
 using NAudio.Dsp;
+using System.IO;
+using NAudio.Wave.SampleProviders;
+using NAudio.Wave;
 
 namespace FantasticMusicPlayer
 {
@@ -44,58 +47,143 @@ namespace FantasticMusicPlayer
 
     public class SpeakerInRoomDSP : DSPClass
     {
-        const int sideDelay_us = 429;
+        const int processBuffer = 1024;
         bool canSurround = false;
-        RingBuffer leftBuffer = null;
-        RingBuffer rightBuffer = null;
-        BiQuadFilter crossInFilterL;
-        BiQuadFilter crossInFilterL2;
-        BiQuadFilter crossInFilterR;
-        BiQuadFilter crossInFilterR2;
+
+        private static byte[] firData = null;
+
+        private static int lastSampleRate = 0;
+
         public override void init(int sampleRate, int channels, int bitdepth = 4)
         {
+
             canSurround = false;
-            int bufferLen = (int)(0.32 / 1000 * sampleRate);
-            if(bufferLen > 0 && channels == 2)
+            if (channels == 2)
             {
                 canSurround = true;
-                leftBuffer = new RingBuffer(bufferLen);
-                rightBuffer = new RingBuffer(bufferLen);
-                crossInFilterL = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
-                crossInFilterL2 = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, 3);
-                crossInFilterR = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, -14);
-                crossInFilterR2 = BiQuadFilter.PeakingEQ(sampleRate, 20000, 0.1f, 3);
+                if (lastSampleRate != sampleRate)
+                {
+
+                    float[][] IRs = genIR(sampleRate);
+                    FFTConvolver.con01_reset();
+                    FFTConvolver.con02_reset();
+                    FFTConvolver.con03_reset();
+                    FFTConvolver.con04_reset();
+                    int irLen = IRs[0].Length;
+                    int fftSize = 1024;
+                    unsafe
+                    {
+                        fixed (float* ir0 = IRs[0]) { test(FFTConvolver.con01_init(fftSize, ir0, irLen)); }
+                        fixed (float* ir0 = IRs[1]) { test(FFTConvolver.con02_init(fftSize, ir0, irLen)); }
+                        fixed (float* ir0 = IRs[8]) { test(FFTConvolver.con03_init(fftSize, ir0, irLen)); }
+                        fixed (float* ir0 = IRs[9]) { test(FFTConvolver.con04_init(fftSize, ir0, irLen)); }
+                    }
+                    lastSampleRate = sampleRate;
+                }
             }
-            this.CrossIn = 0.57f;
+
         }
-        public float CrossIn { 
-            get {
-                return mainWeight;
-            } 
-            set {
-                mainWeight = value;
-                subWeight = 1 - value;
+        void test(bool b)
+        {
+            if (!b) { throw new Exception("Operation failed!"); }
+        }
+        private float[][] genIR(int sampleRate)
+        {
+
+            List<float>[] ret;
+            if (firData == null)
+            {
+                firData = Properties.Resources.fir;
             }
+            using (MemoryStream ms = new MemoryStream(firData))
+            using (WaveFileReader irIn = new WaveFileReader(ms))
+            {
+                ret = new List<float>[irIn.WaveFormat.Channels];
+                for (int i = 0; i < ret.Length; i++)
+                {
+                    ret[i] = new List<float>();
+                }
+                WaveToSampleProvider sampleReader = new WaveToSampleProvider(irIn);
+                ISampleProvider sampleProvider = sampleReader;
+                if (sampleRate != irIn.WaveFormat.SampleRate)
+                {
+                    sampleProvider = new WdlResamplingSampleProvider(sampleProvider, sampleRate);
+                }
+                float[] buffer = new float[ret.Length * 100];
+                int count = 0;
+                while ((count = sampleProvider.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    for (int i = 0; i < count; i += ret.Length)
+                    {
+                        for (int c = 0; c < ret.Length; c++)
+                        {
+                            ret[c].Add(buffer[i + c]);
+                        }
+                    }
+                }
+            }
+            return ret.Select(r => r.ToArray()).ToArray();
         }
 
-        private float mainWeight = 0.7f;
-        private float subWeight = 0.3f;
+
+        float[] leftIn = new float[processBuffer];
+        float[] rightIn = new float[processBuffer];
+        float[] leftOutL = new float[processBuffer];
+        float[] leftOutR = new float[processBuffer];
+        float[] rightOutL = new float[processBuffer];
+        float[] rightOutR = new float[processBuffer];
+
+       
+
+
         public override unsafe void processAudio(float* buffer, int len)
         {
             if (canSurround)
             {
-                for (int i = 0; i < len; i+=2)
+
+                int unprocessed = len;
+                int begin = 0;
+                while (unprocessed > 0)
                 {
-                    float l = crossInFilterL2.Transform(buffer[i]);
-                    float r = crossInFilterR2.Transform(buffer[i+1]);
+                    int thistime = unprocessed > processBuffer * 2 ? processBuffer * 2 : unprocessed;
+                    int ptr = 0;
+                    for (int i = begin; i < thistime + begin; i += 2, ptr++)
+                    {
+                        leftIn[ptr] = buffer[i];
+                        rightIn[ptr] = buffer[i + 1];
 
 
-                    buffer[i] = l * mainWeight + crossInFilterL.Transform(rightBuffer.pop(r)) * subWeight;
-                    buffer[i + 1] = r * mainWeight + crossInFilterR.Transform(leftBuffer.pop(l)) * subWeight;
+                    }
+                    unsafe
+                    {
+                        fixed (float* leftInPtr = leftIn)
+                        fixed (float* rightInPtr = rightIn)
+                        fixed (float* leftOutLPtr = leftOutL)
+                        fixed (float* rightOutLPtr = rightOutL)
+                        fixed (float* leftOutRPtr = leftOutR)
+                        fixed (float* rightOutRPtr = rightOutR)
+                        {
+                            FFTConvolver.con01_process(leftInPtr, leftOutLPtr, thistime / 2);
+                            FFTConvolver.con02_process(leftInPtr, leftOutRPtr, thistime / 2);
+                            FFTConvolver.con03_process(rightInPtr, rightOutLPtr, thistime / 2);
+                            FFTConvolver.con04_process(rightInPtr, rightOutRPtr, thistime / 2);
+                        }
+
+                    }
+                    ptr = 0;
+                    for (int i = begin; i < thistime + begin; i += 2, ptr++)
+                    {
+                        buffer[i] = leftOutL[ptr] + rightOutL[ptr];
+                        buffer[i + 1] = leftOutR[ptr] + rightOutR[ptr];
+                    }
+
+                    begin += thistime;
+                    unprocessed -= thistime;
                 }
             }
         }
     }
+
 
     public class RingBuffer
     {

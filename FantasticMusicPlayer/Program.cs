@@ -12,6 +12,8 @@ namespace FantasticMusicPlayer
 
         public const string appid = "com.zyfdroid.fantasymusicplayer_v100000000";
 
+        private static string _fftModulePath = "";
+
         public static void checkLibrary() {
             String rootpath = Path.Combine(Path.GetTempPath(), appid, "libs");
             String pluginpath = Path.Combine(rootpath, "plugins");
@@ -20,7 +22,8 @@ namespace FantasticMusicPlayer
             makeFileExists(Properties.Resources.bass_aac, Path.Combine(pluginpath, "bass_aac.dll"));
             makeFileExists(Properties.Resources.bass_ape, Path.Combine(pluginpath, "bass_ape.dll"));
             makeFileExists(Properties.Resources.bass_fx, Path.Combine(pluginpath, "bass_fx.dll"));
-
+            makeFileExists(Properties.Resources.FFTConvolver, Path.Combine(rootpath, "fftconvolver02.dll"));
+            _fftModulePath = Path.Combine(rootpath, "fftconvolver02.dll");
             if (Un4seen.Bass.Bass.LoadMe(Path.Combine(rootpath)))
             {
 
@@ -39,7 +42,10 @@ namespace FantasticMusicPlayer
 
 
         }
-
+        public static string FFTConvolverModule
+        {
+            get => _fftModulePath;
+        }
         public static void makeFileExists(byte[] data,String filename) {
             if (!Directory.Exists(Path.GetDirectoryName(filename))) {
                 Directory.CreateDirectory(Path.GetDirectoryName(filename));
@@ -56,6 +62,7 @@ namespace FantasticMusicPlayer
         static void Main()
         {
             checkLibrary();
+            FFTConvolver.Init();
             #if DEBUG
             Environment.CurrentDirectory = "Q:\\MP3Player";
 #endif
