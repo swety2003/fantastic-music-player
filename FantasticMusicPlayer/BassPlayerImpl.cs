@@ -175,7 +175,9 @@ namespace FantasticMusicPlayer
                 Stopped?.Invoke(this, EventArgs.Empty);
                 return;
             };
-            Looping = Looping;
+            //防止编译器优化
+            bool b = Looping;
+            Looping = b.ToString().ToLower().StartsWith("t");
             initFx();
             applyFxStatus();
             //BASS_ChannelSetAttribute(currentPlaying, BASSAttribute.BASS_ATTRIB_VOL, _volume);

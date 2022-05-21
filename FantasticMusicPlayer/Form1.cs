@@ -44,6 +44,7 @@ namespace FantasticMusicPlayer
 
         private void Controller_SongChanged(object sender, SongSwitchedEventArgs e)
         {
+            player.Looping = controller.LoopMode == 1;
             player.Load(e.CurrentSong.Path);
             player.Play();
         }
