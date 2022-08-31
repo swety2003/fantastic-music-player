@@ -53,47 +53,70 @@ namespace FantasticMusicPlayer
         private static byte[] firData = null;
 
         private static int lastSampleRate = 0;
-
+        private static object syncObjectInit = new object();
         public override void init(int sampleRate, int channels, int bitdepth = 4)
         {
-
-            canSurround = false;
-            if (channels == 2)
+            lock (syncObjectInit)
             {
-                canSurround = true;
-                if (lastSampleRate != sampleRate)
+                canSurround = false;
+                if (channels == 2)
                 {
-
-                    float[][] IRs = genIR(sampleRate);
-                    FFTConvolver.con01_reset();
-                    FFTConvolver.con02_reset();
-                    FFTConvolver.con03_reset();
-                    FFTConvolver.con04_reset();
-                    int irLen = IRs[0].Length;
-                    int fftSize = 1024;
-                    unsafe
+                    canSurround = true;
+                    if (lastSampleRate != sampleRate)
                     {
-                        fixed (float* ir0 = IRs[0]) { test(FFTConvolver.con01_init(fftSize, ir0, irLen)); }
-                        fixed (float* ir0 = IRs[1]) { test(FFTConvolver.con02_init(fftSize, ir0, irLen)); }
-                        fixed (float* ir0 = IRs[8]) { test(FFTConvolver.con03_init(fftSize, ir0, irLen)); }
-                        fixed (float* ir0 = IRs[9]) { test(FFTConvolver.con04_init(fftSize, ir0, irLen)); }
+
+                        float[][] IRs = genIR(sampleRate);
+                        if (IRs.Length != 4)
+                        {
+                            canSurround = false;
+                            return;
+                        }
+                        FFTConvolver.con01_reset();
+                        FFTConvolver.con02_reset();
+                        FFTConvolver.con03_reset();
+                        FFTConvolver.con04_reset();
+                        int irLen = IRs[0].Length;
+                        int fftSize = 1024;
+                        unsafe
+                        {
+                            fixed (float* ir0 = IRs[0]) { test(FFTConvolver.con01_init(fftSize, ir0, irLen)); }
+                            fixed (float* ir0 = IRs[1]) { test(FFTConvolver.con02_init(fftSize, ir0, irLen)); }
+                            fixed (float* ir0 = IRs[2]) { test(FFTConvolver.con03_init(fftSize, ir0, irLen)); }
+                            fixed (float* ir0 = IRs[3]) { test(FFTConvolver.con04_init(fftSize, ir0, irLen)); }
+                        }
+                        lastSampleRate = sampleRate;
                     }
-                    lastSampleRate = sampleRate;
                 }
             }
-
         }
         void test(bool b)
         {
             if (!b) { throw new Exception("Operation failed!"); }
         }
+
+        public string firSource = null;
+
         private float[][] genIR(int sampleRate)
         {
 
             List<float>[] ret;
             if (firData == null)
             {
-                firData = Properties.Resources.fir;
+                if (firSource == null)
+                {
+                    firData = Properties.Resources.fir2;
+                }
+                else
+                {
+                    try
+                    {
+                        firData = File.ReadAllBytes(firSource);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("不能读取Wav文件", ex);
+                    }
+                }
             }
             using (MemoryStream ms = new MemoryStream(firData))
             using (WaveFileReader irIn = new WaveFileReader(ms))
@@ -103,8 +126,7 @@ namespace FantasticMusicPlayer
                 {
                     ret[i] = new List<float>();
                 }
-                WaveToSampleProvider sampleReader = new WaveToSampleProvider(irIn);
-                ISampleProvider sampleProvider = sampleReader;
+                ISampleProvider sampleProvider = irIn.ToSampleProvider(); ;
                 if (sampleRate != irIn.WaveFormat.SampleRate)
                 {
                     sampleProvider = new WdlResamplingSampleProvider(sampleProvider, sampleRate);
@@ -132,10 +154,15 @@ namespace FantasticMusicPlayer
         float[] leftOutR = new float[processBuffer];
         float[] rightOutL = new float[processBuffer];
         float[] rightOutR = new float[processBuffer];
-
-       
-
-
+        public SpeakerInRoomDSP(string fxfile)
+        {
+            this.firSource = fxfile;
+            lastSampleRate = 0;
+            firData = null;
+        }
+        public SpeakerInRoomDSP() : this(null)
+        {
+        }
         public override unsafe void processAudio(float* buffer, int len)
         {
             if (canSurround)

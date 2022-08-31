@@ -29,6 +29,10 @@ namespace FantasticMusicPlayer
         List<String> availableExtenstions = new List<string>(new string[] {".mp3",".wav",".flac",".ape",".aac"});
 
         public void EnumrateDir(String root) {
+            if (root.Contains("/.") || root.Contains("\\."))
+            {
+                return;
+            }
             PlayList pl = new PlayList(Path.GetFileName(root));
             PlayLists.Add(pl);
             Directory.EnumerateFiles(root, "*.pl").OrderBy(o => o).ToList().ForEach(f => SetupVirtualList(f));

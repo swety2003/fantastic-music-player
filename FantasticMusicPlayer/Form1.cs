@@ -1257,6 +1257,11 @@ namespace FantasticMusicPlayer
             if (dsptype == 2)
             {
                 ((DspSwitcher)player.SurroundSound).WrappedDSP = new SpeakerInRoomDSP();
+                if (Properties.Settings.Default.fxfile.ToLower().EndsWith(".wav"))
+                {
+                    Properties.Settings.Default.fxfile = null;
+                    Properties.Settings.Default.Save();
+                }
             }
 
             
@@ -1359,6 +1364,7 @@ namespace FantasticMusicPlayer
                 fxfiles.Add("");
                 if (Directory.Exists(".musicfx"))
                 {
+                    Directory.EnumerateFiles(".musicfx","*.wav").ToList().ForEach(f=>fxfiles.Add(Path.GetFileName(f)));
                     Directory.EnumerateFiles(".musicfx","*.eq").ToList().ForEach(f=>fxfiles.Add(Path.GetFileName(f)));
                 }
             }
@@ -1388,6 +1394,11 @@ namespace FantasticMusicPlayer
                         {
                             _this.player.LoadFx(fxpath);
                             Properties.Settings.Default.fxfile = fxpath;
+                            if (fxpath.ToLower().EndsWith(".wav"))
+                            {
+                                Properties.Settings.Default.dsptype = 0;
+                                _this.dsptype = 0;
+                            }
                             Properties.Settings.Default.Save();
                         }
                         catch (Exception ex)

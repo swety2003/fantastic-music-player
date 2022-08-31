@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -255,6 +256,60 @@ namespace FantasticMusicPlayer
 
         public void LoadFx(string fxfile)
         {
+            if (fxfile != null)
+            {
+                if (fxfile.ToLower().EndsWith(".eq"))
+                {
+                    ApplyLegacyFx(fxfile);
+                    return;
+                }
+                if (fxfile.ToLower().EndsWith(".wav"))
+                {
+                    ApplyLegacyFx(null);
+                    ApplyConvolverFx(fxfile);
+                    return;
+                }
+            }
+
+            
+            ApplyLegacyFx(null);
+        }
+
+
+        void ApplyConvolverFx(string fxfile)
+        {
+            using (var convReader = new NAudio.Wave.WaveFileReader(fxfile))
+            {
+                WaveFormat format = convReader.WaveFormat;
+                if (format.Channels != 4)
+                {
+                    throw new InvalidDataException("无效的脉冲响应文件");
+                }
+                if (convReader.TotalTime > TimeSpan.FromMilliseconds(10000))
+                {
+                    throw new InvalidDataException("文件过大");
+                }
+            }
+            DspSwitcher switcher = this.SurroundSound as DspSwitcher;
+            if (switcher != null)
+            {
+                switcher.WrappedDSP = new SpeakerInRoomDSP(fxfile);
+                switcher.Enabled = true;
+            }
+        }
+
+        void ApplyLegacyFx(string fxfile)
+        {
+            DspSwitcher dspSwitcher = this.SurroundSound as DspSwitcher;
+            if (dspSwitcher.WrappedDSP != null && dspSwitcher.WrappedDSP is SpeakerInRoomDSP)
+            {
+                SpeakerInRoomDSP dsp = dspSwitcher.WrappedDSP as SpeakerInRoomDSP;
+                if (dsp.firSource != null)
+                {
+                    dspSwitcher.WrappedDSP = null;
+                }
+            }
+
             if (fxfile == null || fxfile=="")
             {
                 fxobjects.Clear();

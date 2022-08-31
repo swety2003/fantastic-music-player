@@ -154,8 +154,8 @@
     <Content Include="FodyWeavers.xml" />
     <Content Include="icon.ico" />
     <None Include="Resources\FFTConvolver.dll" />
+    <None Include="Resources\fir2.dat" />
     <Content Include="Resources\fx.png" />
-    <None Include="Resources\fir.dat" />
     <None Include="Resources\rs_on.png" />
     <None Include="Resources\heart.png" />
     <None Include="Resources\heart_fill.png" />
