@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -57,6 +58,7 @@ namespace FantasticMusicPlayer
                 lblArtsit.Text = (e.artist + "    " + e.album).Trim();
                 Text = e.title;
                 imgHiResAudio.Enabled = e.HiResAudio;
+                this.lyricManager = e.LyricManager;
             });
             checkFavStatus();
             updateTopControl();
@@ -199,7 +201,7 @@ namespace FantasticMusicPlayer
             RegisterHotKey(this.Handle, 2, 0, Keys.MediaPreviousTrack);
             RegisterHotKey(this.Handle, 3, 0, Keys.MediaPlayPause);
             RegisterHotKey(this.Handle, 4, 0, Keys.MediaNextTrack);
-
+            initLyrics();
         }
 
         void resizeBitmap()
@@ -225,6 +227,7 @@ namespace FantasticMusicPlayer
         GraphicsLayer shadowLayer, backgroundLayer, gfxLayer, frameLayer, bottomControlLayer, topTextLayer, spectrumLayer, discDisplayBackLayer, discDisplayLayer;
         GraphicsLayer siderBackgroundLayer, siderForegroundLayer;
         GraphicsLayer listLayer;
+        GraphicsLayer lyricLayer;
 
         internal List<GraphicsLayer> layers = new List<GraphicsLayer>();
 
@@ -238,12 +241,13 @@ namespace FantasticMusicPlayer
             frameLayer = new GraphicsLayer(this, new Control() { Location = new Point(0, 0), Size = this.Size }) { Text = "框架层" };
             siderForegroundLayer = new GraphicsLayer(this, tblVolumn) { Text = "右控制器前景" };
 
+            discDisplayBackLayer = new GraphicsLayer(this, locGlowing) { Text = "唱片发光特效层" };
+            discDisplayLayer = new GraphicsLayer(this, locMask) { Text = "唱片层" };
+            lyricLayer = new GraphicsLayer(this, locLyric) { Text = "歌词层" };
             listLayer = new GraphicsLayer(this, tblList) { Text = "列表层" };
 
             bottomControlLayer = new GraphicsLayer(this, tblBottomControl) { Text = "底部控制器" };
             topTextLayer = new GraphicsLayer(this, tblTopInfo) { Text = "SpyXX好玩吗" };
-            discDisplayBackLayer = new GraphicsLayer(this, locGlowing) { Text = "唱片发光特效层" };
-            discDisplayLayer = new GraphicsLayer(this, locMask) { Text = "唱片层" };
             for (int i = 0; i < layers.Count; i++)
             {
                 Form parent = i == 0 ? (Form)this : layers[i - 1];
@@ -264,6 +268,7 @@ namespace FantasticMusicPlayer
             discDisplayLayer.g.Clear(Color.Transparent);
             discDisplayLayer.g.Clear(Color.Transparent);
             listLayer.g.Clear(Color.Transparent);
+            lyricLayer.g.Clear(Color.Transparent);
             updateAll();
             updateAll2();
         }
@@ -909,7 +914,7 @@ namespace FantasticMusicPlayer
         {
             computeSfx();
             updateSpectrum();
-
+            updateLyric();
             if (crossfadeCountdown > 0)
             {
                 updateBackground();
@@ -1544,6 +1549,209 @@ namespace FantasticMusicPlayer
             velotry = 0.01f;
         }
 
+        private void locSpectrumArea_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tblBottomControl_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblTitle_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void locMask_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tblUtils_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+
+        private void initLyrics()
+        {
+            lyricBackgroundBitmap = new Bitmap(Properties.Resources.bg_lyric,locLyric.Width,locLyric.Height);
+            lyricComposedBitmap = new Bitmap(locLyric.Width,locLyric.Height);
+            lyricComposeShadowBitmap = new Bitmap(locLyric.Width / 2,locLyric.Height / 2);
+            lyricComposeTargetBitmap = new Bitmap(locLyric.Width, locLyric.Height);
+            lyricCenter = new StringFormat() { Alignment = StringAlignment.Center,LineAlignment = StringAlignment.Center };
+            lyricRect = new RectangleF(-locLyric.Width, 0, locLyric.Width * 3, locLyric.Height);
+            lyricShadowBlurer = new TextShadow();
+            lyricShadowBlurer.Radius = 3;
+            lyricShadowBlurer.Distance = 0;
+            if (File.Exists("lrc.ttf"))
+            {
+                try
+                {
+                    lyricPrivateFont = new PrivateFontCollection();
+                    lyricPrivateFont.AddFontFile(Path.GetFullPath("lrc.ttf"));
+                    Font f = new Font(lyricPrivateFont.Families[0], locLyric.Font.Size, FontStyle.Bold);
+                    locLyric.Font = f;
+                }catch (Exception) {
+                }  
+            }
+        }
+
+        private LyricManager lyricManager = null;
+        private PrivateFontCollection lyricPrivateFont;
+        private Bitmap lyricBackgroundBitmap;
+        private Bitmap lyricComposedBitmap;
+        private Bitmap lyricComposeShadowBitmap;
+        private Bitmap lyricComposeTargetBitmap;
+        private TextShadow lyricShadowBlurer;
+        Brush lyricFontColorShadow = Brushes.Black;
+        Brush lyricFontColor = Brushes.White;
+
+        private StringFormat lyricCenter;
+        private RectangleF lyricRect;
+
+
+        private LyricManager.LyricEntry currentLyricEntry = null;
+
+        void updateLyric()
+        {
+            LyricManager.LyricEntry newLyric = null;
+            if (lyricManager != null)
+            {
+                newLyric = lyricManager.GetLyric(TimeSpan.FromMilliseconds(player.CurrentPosition));
+            }
+            if(newLyric != currentLyricEntry)
+            {
+                currentLyricEntry = newLyric;
+
+                updateLyricCd = 32;
+                inUpdateLyric = true;
+            }
+
+            lyricLayer.g.Clear(Color.Transparent);
+            if (inUpdateLyric)
+            {
+                animatedUpdateLyric();
+            }
+            else
+            {
+                lyricAlpha -= 1f / 128f;
+                if(lyricAlpha < 0f) { lyricAlpha = 0f; }
+                if(lyricAlpha > 1f)
+                {
+                    lyricLayer.g.DrawImage(lyricComposeTargetBitmap, 0, 0);
+                }
+                else
+                {
+                    DrawUtils.drawAlphaImage(lyricLayer.g, lyricComposeTargetBitmap, 0, 0, locLyric.Width, locLyric.Height, lyricAlpha);
+                }
+            }
+            lyricLayer.UpdateWindow();
+        }
+
+        private float lyricAlpha = 10;
+
+        private int updateLyricCd = 0;
+        private bool inUpdateLyric = false;
+        void animatedUpdateLyric()
+        {
+            if(updateLyricCd == 32)
+            {
+                preRenderLyric();
+            }
+            if (updateLyricCd == 16)
+            {
+                postRenderLyric();
+            }
+            float alpha = 0.0f;
+
+            float postAlpha = lyricAlpha > 1.0f ? 1.0f : lyricAlpha;
+
+            if(updateLyricCd > 16)
+            {
+                alpha = (float)(updateLyricCd - 16f) / 16f * postAlpha;
+            }
+            if(updateLyricCd < 16)
+            {
+                alpha = (float)(16f - updateLyricCd) / 16f;
+            }
+            DrawUtils.drawAlphaImage(lyricLayer.g, lyricComposeTargetBitmap, 0, 0, locLyric.Width, locLyric.Height, alpha);
+
+            updateLyricCd--;
+            if(updateLyricCd < 0)
+            {
+                lyricAlpha = currentLyricEntry == null ? 3f : currentLyricEntry.text.Length * 0.4f;
+                inUpdateLyric = false;
+            }
+        }
+
+        void preRenderLyric()
+        {
+            using(Graphics bg = Graphics.FromImage(lyricComposeShadowBitmap))
+            {
+                bg.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                bg.CompositingQuality= CompositingQuality.HighQuality;
+
+                bg.ScaleTransform(0.5f, 0.5f);
+                bg.Clear(Color.Transparent);
+                using(Graphics tg = Graphics.FromImage(lyricComposedBitmap))
+                {
+                    tg.Clear(Color.Transparent);
+                    tg.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+
+                    var lyric = this.currentLyricEntry;
+                    if(lyric == null || lyric.isEmpty) { return; }
+
+                    if (lyric.hasTranslation)
+                    {
+                        bg.TranslateTransform(0, -14);
+                        tg.TranslateTransform(0, -14);
+                        bg.DrawString(lyric.translatedText, locLyric.Font, lyricFontColorShadow, lyricRect, lyricCenter);
+                        tg.DrawString(lyric.translatedText, locLyric.Font, lyricFontColor, lyricRect, lyricCenter);
+                        bg.TranslateTransform(0, 28);
+                        tg.TranslateTransform(0, 28);
+                        bg.DrawString(lyric.text, fntSub.Font, lyricFontColorShadow, lyricRect, lyricCenter);
+                        tg.DrawString(lyric.text, fntSub.Font, lyricFontColor, lyricRect, lyricCenter);
+                    }
+                    else
+                    {
+                        bg.DrawString(lyric.text, locLyric.Font, lyricFontColorShadow, lyricRect, lyricCenter);
+                        tg.DrawString(lyric.text, locLyric.Font, lyricFontColor, lyricRect, lyricCenter);
+                    }
+
+
+
+                }
+            }
+
+            lyricShadowBlurer.MaskShadow(lyricComposeShadowBitmap);
+        }
+
+        void postRenderLyric()
+        {
+            using(Graphics g = Graphics.FromImage(lyricComposeTargetBitmap))
+            {
+                g.Clear(Color.Transparent);
+                g.InterpolationMode = InterpolationMode.HighQualityBilinear;
+                if (currentLyricEntry == null || currentLyricEntry.isEmpty)
+                {
+                    return;
+                }
+                g.DrawImage(lyricBackgroundBitmap, 0, 0, locLyric.Width, locLyric.Height);
+                g.DrawImage(lyricComposeShadowBitmap, 0, 0, locLyric.Width, locLyric.Height);
+                g.DrawImage(lyricComposedBitmap, 0, 0);
+            }
+
+        }
+
+
+
+
+
+
+
         [DllImport("user32.dll")]
         public static extern UInt32 RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, Keys vk);
         [DllImport("user32.dll")]
@@ -1633,7 +1841,8 @@ namespace FantasticMusicPlayer
             Invoke(a);
         }
 
-
        
+
+        
     }
 }

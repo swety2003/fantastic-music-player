@@ -113,6 +113,7 @@
     <Compile Include="lib\IconMaker.cs" />
     <Compile Include="lib\MyGdiFramework.cs" />
     <Compile Include="lib\SizedStack.cs" />
+    <Compile Include="LyricManager.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -155,6 +156,7 @@
     <Content Include="icon.ico" />
     <None Include="Resources\FFTConvolver.dll" />
     <None Include="Resources\fir2.dat" />
+    <None Include="Resources\bg_lyric.png" />
     <Content Include="Resources\fx.png" />
     <None Include="Resources\rs_on.png" />
     <None Include="Resources\heart.png" />

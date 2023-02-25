@@ -163,6 +163,16 @@ namespace FantasticMusicPlayer.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap bg_lyric {
+            get {
+                object obj = ResourceManager.GetObject("bg_lyric", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap bg_volumeSlider {
             get {
                 object obj = ResourceManager.GetObject("bg_volumeSlider", resourceCulture);

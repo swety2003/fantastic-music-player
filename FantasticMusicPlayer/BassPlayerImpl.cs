@@ -150,18 +150,38 @@ namespace FantasticMusicPlayer
             BASS_StreamFree(currentPlaying);
 
             TAG_INFO tag = Un4seen.Bass.AddOn.Tags.BassTags.BASS_TAG_GetFromFile(filename);
+            
             if (tag.title == null || tag.title == "") { tag.title = tag.filename; }
 
             bool isHiResAudio = filename.ToLower().EndsWith(".flac") || filename.ToLower().EndsWith(".ape") || filename.ToLower().EndsWith(".wav");
 
+            LyricManager lyricManager = null;
+
+            var expectedLyricFile = Path.Combine(Path.GetDirectoryName(filename),Path.GetFileNameWithoutExtension(filename)+".lrc");
+
+            if(File.Exists(expectedLyricFile))
+            {
+                lyricManager = new LyricManager(File.ReadAllText(expectedLyricFile));
+                if(lyricManager.lyricEntries.Count < 2) {
+                    lyricManager = null;
+                }
+            }
+
             SongInfoAvailable?.Invoke(this,
-                new SongInfoEventArgs(tag.title, tag.artist, tag.album) {HiResAudio = isHiResAudio});
+                new SongInfoEventArgs(tag.title, tag.artist, tag.album,lyricManager) {HiResAudio = isHiResAudio});
 
             if (tag.PictureCount > 0)
             {
                 try
                 {
-                    CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(tag.PictureGet(0).PictureImage), false));
+                    TagPicture tagp = null;
+                    for (int i = 0; i < 32; i++)
+                    {
+                        tagp = tag.PictureGet(i);
+                        if (tagp != null) { break; }
+                    }
+
+                    CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(tagp.PictureImage), false));
                 }
                 catch {
                     CoverAvailable?.Invoke(this, new AlbumEventArgs(new Bitmap(Properties.Resources.default_cover), true));

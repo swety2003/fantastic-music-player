@@ -66,7 +66,9 @@
             this.locVolumeMinPoint = new System.Windows.Forms.Label();
             this.locVolumnMaxPoint = new System.Windows.Forms.Label();
             this.tblList = new System.Windows.Forms.Panel();
+            this.locLyric = new System.Windows.Forms.Label();
             this.btnFav = new System.Windows.Forms.Button();
+            this.fntSub = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -105,6 +107,7 @@
             this.lblTitle.TabIndex = 3;
             this.lblTitle.Text = "label1";
             this.lblTitle.Visible = false;
+            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // lblArtsit
             // 
@@ -137,6 +140,7 @@
             this.locMask.TabIndex = 4;
             this.locMask.TabStop = false;
             this.locMask.Visible = false;
+            this.locMask.Click += new System.EventHandler(this.locMask_Click);
             // 
             // btnMin
             // 
@@ -330,6 +334,7 @@
             this.tblBottomControl.Name = "tblBottomControl";
             this.tblBottomControl.Size = new System.Drawing.Size(768, 98);
             this.tblBottomControl.TabIndex = 8;
+            this.tblBottomControl.Paint += new System.Windows.Forms.PaintEventHandler(this.tblBottomControl_Paint);
             this.tblBottomControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.tblBottomControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.tblBottomControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
@@ -386,6 +391,7 @@
             this.locSpectrumArea.TabIndex = 9;
             this.locSpectrumArea.Text = "label3";
             this.locSpectrumArea.Visible = false;
+            this.locSpectrumArea.Click += new System.EventHandler(this.locSpectrumArea_Click);
             // 
             // tblTopInfo
             // 
@@ -434,6 +440,7 @@
             this.tblUtils.Size = new System.Drawing.Size(60, 201);
             this.tblUtils.TabIndex = 11;
             this.tblUtils.Visible = false;
+            this.tblUtils.Paint += new System.Windows.Forms.PaintEventHandler(this.tblUtils_Paint);
             // 
             // btnSrs
             // 
@@ -539,6 +546,15 @@
             this.tblList.MouseMove += new System.Windows.Forms.MouseEventHandler(this.listMouseMove);
             this.tblList.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listMouseUp);
             // 
+            // locLyric
+            // 
+            this.locLyric.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.locLyric.Location = new System.Drawing.Point(0, 322);
+            this.locLyric.Name = "locLyric";
+            this.locLyric.Size = new System.Drawing.Size(768, 76);
+            this.locLyric.TabIndex = 13;
+            this.locLyric.Visible = false;
+            // 
             // btnFav
             // 
             this.btnFav.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -554,12 +570,25 @@
             this.btnFav.MouseLeave += new System.EventHandler(this.sfxReleaser);
             this.btnFav.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
             // 
+            // fntSub
+            // 
+            this.fntSub.AutoSize = true;
+            this.fntSub.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.fntSub.Location = new System.Drawing.Point(585, 166);
+            this.fntSub.Name = "fntSub";
+            this.fntSub.Size = new System.Drawing.Size(71, 26);
+            this.fntSub.TabIndex = 13;
+            this.fntSub.Text = "label1";
+            this.fntSub.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackgroundImage = global::FantasticMusicPlayer.Properties.Resources.control_blueprint;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(768, 440);
+            this.Controls.Add(this.locLyric);
+            this.Controls.Add(this.fntSub);
             this.Controls.Add(this.tblList);
             this.Controls.Add(this.tblUtils);
             this.Controls.Add(this.tblVolumn);
@@ -577,7 +606,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Music Player";
+            this.Text = "MusicPlayer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -639,6 +668,8 @@
         private System.Windows.Forms.PictureBox imgBass;
         private System.Windows.Forms.Button btnSrs;
         private System.Windows.Forms.Button btnFav;
+        private System.Windows.Forms.Label locLyric;
+        private System.Windows.Forms.Label fntSub;
     }
 }
 

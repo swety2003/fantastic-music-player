@@ -53,11 +53,14 @@ namespace FantasticMusicPlayer
 
         public bool HiResAudio { get; set; }
 
-        public SongInfoEventArgs(string title, string artist, string album)
+        public LyricManager LyricManager { get; set; }
+
+        public SongInfoEventArgs(string title, string artist, string album,LyricManager lyric)
         {
             this.title = title;
             this.artist = artist;
             this.album = album;
+            this.LyricManager = lyric;
         }
     }
 }
