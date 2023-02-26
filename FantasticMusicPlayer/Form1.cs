@@ -1641,10 +1641,19 @@ namespace FantasticMusicPlayer
                 if(lyricAlpha < 0f) { lyricAlpha = 0f; }
                 if(lyricAlpha > 1f)
                 {
+                    if (currentShowingLyricBackground)
+                    {
+                        lyricLayer.g.DrawImage(lyricBackgroundBitmap, 0, 0);
+                    }
                     lyricLayer.g.DrawImage(lyricComposeTargetBitmap, 0, 0);
                 }
                 else
                 {
+                    if (currentShowingLyricBackground)
+                    {
+                        DrawUtils.drawAlphaImage(lyricLayer.g, lyricBackgroundBitmap, 0, 0, locLyric.Width, locLyric.Height, lyricAlpha);
+                    }
+                    
                     DrawUtils.drawAlphaImage(lyricLayer.g, lyricComposeTargetBitmap, 0, 0, locLyric.Width, locLyric.Height, lyricAlpha);
                 }
             }
@@ -1655,6 +1664,9 @@ namespace FantasticMusicPlayer
 
         private int updateLyricCd = 0;
         private bool inUpdateLyric = false;
+
+        private bool currentShowingLyricBackground = false;
+
         void animatedUpdateLyric()
         {
             if(updateLyricCd == 32)
@@ -1667,22 +1679,64 @@ namespace FantasticMusicPlayer
             }
             float alpha = 0.0f;
 
-            float postAlpha = lyricAlpha > 1.0f ? 1.0f : lyricAlpha;
+            float bgAlpha = currentShowingLyricBackground ? 1.0f : 0.0f;
 
+            if(currentShowingLyricBackground && (currentLyricEntry != null && !currentLyricEntry.isEmpty)) {
+                bgAlpha = 1.0f;
+            }
+            else if((!currentShowingLyricBackground) && (currentLyricEntry == null || currentLyricEntry.isEmpty))
+            {
+                bgAlpha = 0.0f;
+            }
+            else
+            {
+                if (currentShowingLyricBackground)
+                {
+                    if(updateLyricCd >= 16)
+                    {
+                        bgAlpha = 1.0f;
+                    }
+                    if(updateLyricCd < 16)
+                    {
+                        bgAlpha = (updateLyricCd * 1.0f) / 16f;
+                    }
+                }
+                else
+                {
+                    if (updateLyricCd >= 16)
+                    {
+                        bgAlpha = 0.0f;
+                    }
+                    if (updateLyricCd < 16)
+                    {
+                        bgAlpha = 1f - (updateLyricCd * 1.0f) / 16f;
+                    }
+                }
+            }
+            float postAlpha = lyricAlpha > 1.0f ? 1.0f : lyricAlpha;
             if(updateLyricCd > 16)
             {
                 alpha = (float)(updateLyricCd - 16f) / 16f * postAlpha;
+                if(postAlpha < 1.0f)
+                {
+                    bgAlpha *= postAlpha + (1f - postAlpha) * (1f - (updateLyricCd - 16f) / 16f);
+                }
             }
-            if(updateLyricCd < 16)
+            if(updateLyricCd < 16 && (currentLyricEntry != null && !currentLyricEntry.isEmpty))
             {
                 alpha = (float)(16f - updateLyricCd) / 16f;
+                
             }
+            if(bgAlpha < alpha) { bgAlpha = alpha; }
+            
+            DrawUtils.drawAlphaImage(lyricLayer.g, lyricBackgroundBitmap, 0, 0, locLyric.Width, locLyric.Height, bgAlpha);
             DrawUtils.drawAlphaImage(lyricLayer.g, lyricComposeTargetBitmap, 0, 0, locLyric.Width, locLyric.Height, alpha);
 
             updateLyricCd--;
             if(updateLyricCd < 0)
             {
-                lyricAlpha = currentLyricEntry == null ? 3f : currentLyricEntry.text.Length * 0.4f;
+                lyricAlpha = currentLyricEntry == null ? 3f : currentLyricEntry.text.Length * 0.7f;
+                currentShowingLyricBackground = currentLyricEntry != null && !currentLyricEntry.isEmpty;
                 inUpdateLyric = false;
             }
         }
@@ -1739,7 +1793,7 @@ namespace FantasticMusicPlayer
                 {
                     return;
                 }
-                g.DrawImage(lyricBackgroundBitmap, 0, 0, locLyric.Width, locLyric.Height);
+                //g.DrawImage(lyricBackgroundBitmap, 0, 0, locLyric.Width, locLyric.Height);
                 g.DrawImage(lyricComposeShadowBitmap, 0, 0, locLyric.Width, locLyric.Height);
                 g.DrawImage(lyricComposedBitmap, 0, 0);
             }
