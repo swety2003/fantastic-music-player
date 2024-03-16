@@ -251,7 +251,8 @@ namespace FantasticMusicPlayer
         private void AppendFx(float freq, float octivate, float gain)
         {
             BASS_BFX_PEAKEQ param = new BASS_BFX_PEAKEQ();
-            param.fBandwidth = octivate;
+            param.fQ = 1 / octivate;
+            param.fBandwidth = 0;
             param.fCenter = freq;
             param.fGain = gain;
             int fxhandle = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 0);
