@@ -69,6 +69,7 @@
             this.locLyric = new System.Windows.Forms.Label();
             this.btnFav = new System.Windows.Forms.Button();
             this.fntSub = new System.Windows.Forms.Label();
+            this.btnToggleCompressor = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -317,6 +318,7 @@
             // tblBottomControl
             // 
             this.tblBottomControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.tblBottomControl.Controls.Add(this.btnToggleCompressor);
             this.tblBottomControl.Controls.Add(this.btnPreserved2);
             this.tblBottomControl.Controls.Add(this.lblProgressManager);
             this.tblBottomControl.Controls.Add(this.lblTotalTime);
@@ -581,6 +583,17 @@
             this.fntSub.Text = "label1";
             this.fntSub.Visible = false;
             // 
+            // btnToggleCompressor
+            // 
+            this.btnToggleCompressor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnToggleCompressor.Location = new System.Drawing.Point(137, 54);
+            this.btnToggleCompressor.Name = "btnToggleCompressor";
+            this.btnToggleCompressor.Size = new System.Drawing.Size(35, 35);
+            this.btnToggleCompressor.TabIndex = 7;
+            this.btnToggleCompressor.Text = "button1";
+            this.btnToggleCompressor.UseVisualStyleBackColor = true;
+            this.btnToggleCompressor.Click += new System.EventHandler(this.btnToggleCompressor_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -670,6 +683,7 @@
         private System.Windows.Forms.Button btnFav;
         private System.Windows.Forms.Label locLyric;
         private System.Windows.Forms.Label fntSub;
+        private System.Windows.Forms.Button btnToggleCompressor;
     }
 }
 

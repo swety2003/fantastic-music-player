@@ -1610,6 +1610,12 @@ namespace FantasticMusicPlayer
         Brush lyricFontColor = Brushes.White;
 
         private StringFormat lyricCenter;
+
+        private void btnToggleCompressor_Click(object sender, EventArgs e)
+        {
+            player.DynamicRangeCompressed = ! player.DynamicRangeCompressed;
+        }
+
         private RectangleF lyricRect;
 
 

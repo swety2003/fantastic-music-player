@@ -218,6 +218,7 @@ namespace FantasticMusicPlayer
 
 
         int fxgainparam = 0;
+        int fxcompressor = 0;
         private int fxvolume = 0;
         private List<int> appliedFx = new List<int>();
         private List<FxObject> fxobjects = new List<FxObject>();
@@ -227,7 +228,7 @@ namespace FantasticMusicPlayer
 
         void initFx() {
              fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
-             fxvolume =  Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+             fxvolume =  Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 15);
              //FxReverbHandle = Bass.BASS_ChannelSetFX(currentPlaying,BASSFXType.BASS_FX_BFX_FREEVERB,1);
              //BASS_BFX_FREEVERB reverbParam = new BASS_BFX_FREEVERB();
              //reverbParam.fRoomSize = 0.6f;
@@ -239,6 +240,37 @@ namespace FantasticMusicPlayer
              Bass.BASS_FXSetParameters(fxgainparam, param3);
              param3.fGain = this._volume;
              Bass.BASS_FXSetParameters(fxvolume, param3);
+
+            fxcompressor = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_COMPRESSOR2, 10);
+
+            setCompressorState(_drcompress);
+
+        }
+
+        private void setCompressorState(bool state)
+        {
+            BASS_BFX_COMPRESSOR2 compressor = new BASS_BFX_COMPRESSOR2();
+            if (state)
+            {
+                compressor.Preset_Medium();
+                compressor.fAttack = 1;
+                compressor.fRelease = 160;
+                compressor.fRatio = 2;
+                compressor.fThreshold = -50;
+                compressor.fGain = 22.5f;
+                compressor.Calculate0dBGain();
+                compressor.fGain += 6;
+            }
+            else
+            {
+                compressor.fAttack = 20;
+                compressor.fRelease = 200;
+                compressor.fRatio = 1;
+                compressor.fThreshold = 0;
+                compressor.fGain = 0f;
+            }
+            
+            Bass.BASS_FXSetParameters(fxcompressor, compressor);
         }
 
         void updateVolume()
@@ -255,7 +287,7 @@ namespace FantasticMusicPlayer
             param.fBandwidth = 0;
             param.fCenter = freq;
             param.fGain = gain;
-            int fxhandle = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 0);
+            int fxhandle = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_PEAKEQ, 5);
             BASS_FXSetParameters(fxhandle, param);
             appliedFx.Add(fxhandle);
         }
@@ -272,6 +304,16 @@ namespace FantasticMusicPlayer
                 this._looping = value;
                 BASSFlag loopFlag = this._looping ? BASSFlag.BASS_SAMPLE_LOOP : ~BASSFlag.BASS_SAMPLE_LOOP;
                 BASSFlag result =  Bass.BASS_ChannelFlags(currentPlaying, loopFlag, BASSFlag.BASS_SAMPLE_LOOP);
+            }
+        }
+
+        private bool _drcompress = false;
+        public bool DynamicRangeCompressed
+        {
+            get {  return _drcompress; } set
+            {
+                this._drcompress = value;
+                setCompressorState(value);
             }
         }
 
@@ -377,6 +419,7 @@ namespace FantasticMusicPlayer
              Bass.BASS_FXSetParameters(fxgainparam, param3);
              ClearFx();
              fxobjects.ForEach(fo => AppendFx(fo.Frequent,fo.BandwidthOctivates,fo.Gain));
+
         }
 
         public void Pause()
