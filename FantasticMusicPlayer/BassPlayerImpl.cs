@@ -254,12 +254,12 @@ namespace FantasticMusicPlayer
             {
                 compressor.Preset_Medium();
                 compressor.fAttack = 1;
-                compressor.fRelease = 160;
-                compressor.fRatio = 2;
-                compressor.fThreshold = -50;
+                compressor.fRelease = 4000;
+                compressor.fRatio = 3;
+                compressor.fThreshold = -30;
                 compressor.fGain = 22.5f;
                 compressor.Calculate0dBGain();
-                compressor.fGain += 6;
+                compressor.fGain += 3;
             }
             else
             {
