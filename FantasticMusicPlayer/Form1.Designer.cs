@@ -49,6 +49,7 @@
             this.locButtonBlur = new System.Windows.Forms.Label();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.tblBottomControl = new System.Windows.Forms.Panel();
+            this.btnToggleCompressor = new System.Windows.Forms.Button();
             this.btnPreserved2 = new System.Windows.Forms.Button();
             this.lblProgressManager = new System.Windows.Forms.Panel();
             this.lblTotalTime = new System.Windows.Forms.Label();
@@ -69,7 +70,6 @@
             this.locLyric = new System.Windows.Forms.Label();
             this.btnFav = new System.Windows.Forms.Button();
             this.fntSub = new System.Windows.Forms.Label();
-            this.btnToggleCompressor = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -341,6 +341,17 @@
             this.tblBottomControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.tblBottomControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
+            // btnToggleCompressor
+            // 
+            this.btnToggleCompressor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnToggleCompressor.Location = new System.Drawing.Point(137, 54);
+            this.btnToggleCompressor.Name = "btnToggleCompressor";
+            this.btnToggleCompressor.Size = new System.Drawing.Size(35, 35);
+            this.btnToggleCompressor.TabIndex = 7;
+            this.btnToggleCompressor.Text = "button1";
+            this.btnToggleCompressor.UseVisualStyleBackColor = true;
+            this.btnToggleCompressor.Click += new System.EventHandler(this.btnToggleCompressor_Click);
+            // 
             // btnPreserved2
             // 
             this.btnPreserved2.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -583,17 +594,6 @@
             this.fntSub.Text = "label1";
             this.fntSub.Visible = false;
             // 
-            // btnToggleCompressor
-            // 
-            this.btnToggleCompressor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnToggleCompressor.Location = new System.Drawing.Point(137, 54);
-            this.btnToggleCompressor.Name = "btnToggleCompressor";
-            this.btnToggleCompressor.Size = new System.Drawing.Size(35, 35);
-            this.btnToggleCompressor.TabIndex = 7;
-            this.btnToggleCompressor.Text = "button1";
-            this.btnToggleCompressor.UseVisualStyleBackColor = true;
-            this.btnToggleCompressor.Click += new System.EventHandler(this.btnToggleCompressor_Click);
-            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -627,6 +627,7 @@
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
+            this.Move += new System.EventHandler(this.Form1_Move);
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).EndInit();
             this.tblBottomControl.ResumeLayout(false);

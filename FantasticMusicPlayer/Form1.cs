@@ -243,7 +243,9 @@ namespace FantasticMusicPlayer
 
             discDisplayBackLayer = new GraphicsLayer(this, locGlowing) { Text = "唱片发光特效层" };
             discDisplayLayer = new GraphicsLayer(this, locMask) { Text = "唱片层" };
-            lyricLayer = new GraphicsLayer(this, locLyric) { Text = "歌词层" };
+            locLyric.Width = 1280;
+            lyricLayer = new LyricGraphicsLayer(this, locLyric) { Text = "歌词层" };
+            layers.Remove(lyricLayer);
             listLayer = new GraphicsLayer(this, tblList) { Text = "列表层" };
 
             bottomControlLayer = new GraphicsLayer(this, tblBottomControl) { Text = "底部控制器" };
@@ -252,9 +254,12 @@ namespace FantasticMusicPlayer
             {
                 Form parent = i == 0 ? (Form)this : layers[i - 1];
 
-                //layers[i].ShowInTaskbar = true;
+                
                 layers[i].Show(parent);
             }
+            layers.Add(lyricLayer);
+            lyricLayer.Show();
+            lyricLayer.TopMost = true;
         }
 
         public void layersInited()
@@ -294,32 +299,48 @@ namespace FantasticMusicPlayer
         public void updateAll2() => layers.ForEach(l => l.updatePosition());
 
 
-        bool dragging = false;
-        int dragX, dragY;
+        [DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+        [DllImport("user32.dll")]
+        public static extern bool SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+        public const int WM_SYSCOMMAND = 0x0112;
+        public const int SC_MOVE = 0xF010;
+        public const int HTCAPTION = 0x0002;
+
+        int cx, cy;
+        bool triggledMove = false;
+        bool isMouseDown = false;
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                dragging = true;
-                dragX = e.X; dragY = e.Y;
+                cx = e.X;
+                cy = e.Y;
+                triggledMove = false;
+                isMouseDown = true;
             }
+
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (dragging)
+            if(isMouseDown && !triggledMove)
             {
-                this.Left += e.X - dragX;
-                this.Top += e.Y - dragY;
-                updateAll2();
+                if(Math.Abs(cx - e.X) + Math.Abs(cy - e.Y) > 10)
+                {
+                    triggledMove = true;
+                    ReleaseCapture();
+                    SendMessage(this.Handle, WM_SYSCOMMAND, SC_MOVE + HTCAPTION, 0);
+                }
             }
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            isMouseDown = false;
+            if (!triggledMove)
             {
-                dragging = false;
+                hideList(new Action(() => { }));
             }
         }
 
@@ -327,11 +348,11 @@ namespace FantasticMusicPlayer
         {
             WindowState = FormWindowState.Minimized;
         }
-
+        bool isShowing = false;
         private void Form1_SizeChanged(object sender, EventArgs e)
         {
-            layers.ForEach(l => l.Visible = this.WindowState != FormWindowState.Minimized);
-            renderTimer.Enabled = this.WindowState != FormWindowState.Minimized;
+            layers.Where(l => l != lyricLayer).ToList().ForEach(l => l.Visible = this.WindowState != FormWindowState.Minimized);
+            isShowing = this.WindowState != FormWindowState.Minimized;
         }
 
 
@@ -912,21 +933,25 @@ namespace FantasticMusicPlayer
 
         private void renderTimer_Tick(object sender, EventArgs e)
         {
-            computeSfx();
-            updateSpectrum();
+            if (isShowing)
+            {
+                computeSfx();
+                updateSpectrum();
+                
+                if (crossfadeCountdown > 0)
+                {
+                    updateBackground();
+                }
+
+
+                updateSpinningDisc();
+                updateSliderControl();
+                if (tblList.Visible)
+                {
+                    updateListLayer();
+                }
+            }
             updateLyric();
-            if (crossfadeCountdown > 0)
-            {
-                updateBackground();
-            }
-
-
-            updateSpinningDisc();
-            updateSliderControl();
-            if (tblList.Visible)
-            {
-                updateListLayer();
-            }
         }
 
         Bitmap ic_loop_one = new Bitmap(Properties.Resources.ic_loop_one);//0
@@ -1618,6 +1643,10 @@ namespace FantasticMusicPlayer
 
         private RectangleF lyricRect;
 
+        private void Form1_Move(object sender, EventArgs e)
+        {
+            layers.ForEach(l => l.updatePosition());
+        }
 
         private LyricManager.LyricEntry currentLyricEntry = null;
 
@@ -1843,7 +1872,7 @@ namespace FantasticMusicPlayer
     }
 
     class GraphicsLayer : Form{
-        Form1 parent;
+        protected Form1 parent;
         Rectangle relativeRect;
 
         public bool debug = false;
@@ -1859,7 +1888,7 @@ namespace FantasticMusicPlayer
             updatePosition();
         }
 
-        public void updatePosition() {
+        public virtual void updatePosition() {
             if (debug) {
                 Top = 0;
                 Left = 0;
@@ -1904,5 +1933,22 @@ namespace FantasticMusicPlayer
        
 
         
+    }
+
+    class LyricGraphicsLayer : GraphicsLayer
+    {
+        public LyricGraphicsLayer(Form1 form, Control sizeRef) : base(form, sizeRef)
+        {
+        }
+
+        public override void updatePosition()
+        {
+            Screen s = Screen.FromControl(parent);
+            Rectangle workingArea = s.WorkingArea;
+
+            this.Top = workingArea.Bottom - this.Height;
+            this.Left = workingArea.Left + workingArea.Width / 2 - this.Width / 2;
+        }
+
     }
 }

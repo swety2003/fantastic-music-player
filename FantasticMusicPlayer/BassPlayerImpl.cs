@@ -216,63 +216,63 @@ namespace FantasticMusicPlayer
 
         public DSPClass SurroundSound = new DspSwitcher();
 
-
-        int fxgainparam = 0;
         int fxcompressor = 0;
+        int fxgainparam = 0;
+        int fxcompressorF1 = 0;
+        int fxcompressorF2 = 0;
         private int fxvolume = 0;
         private List<int> appliedFx = new List<int>();
         private List<FxObject> fxobjects = new List<FxObject>();
         private float baseGAIN = 1;
 
-        //private int FxReverbHandle = 0;
-
-        void initFx() {
-             fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
-             fxvolume =  Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 15);
-             //FxReverbHandle = Bass.BASS_ChannelSetFX(currentPlaying,BASSFXType.BASS_FX_BFX_FREEVERB,1);
-             //BASS_BFX_FREEVERB reverbParam = new BASS_BFX_FREEVERB();
-             //reverbParam.fRoomSize = 0.6f;
-             //reverbParam.fDryMix = 0.6f;
-             //reverbParam.fWetMix = 0.4f;
-             //Bass.BASS_FXSetParameters(FxReverbHandle,reverbParam);
-             BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
-             param3.fGain = baseGAIN;
-             Bass.BASS_FXSetParameters(fxgainparam, param3);
-             param3.fGain = this._volume;
-             Bass.BASS_FXSetParameters(fxvolume, param3);
-
-            fxcompressor = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_COMPRESSOR2, 10);
+        void initFx()
+        {
+            fxgainparam = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 1);
+            fxvolume = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 200);
+            BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
+            param3.fGain = baseGAIN;
+            Bass.BASS_FXSetParameters(fxgainparam, param3);
+            param3.fGain = this._volume;
+            Bass.BASS_FXSetParameters(fxvolume, param3);
+            fxcompressor = Bass.BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_DAMP, 10);
 
             setCompressorState(_drcompress);
+
 
         }
 
         private void setCompressorState(bool state)
         {
-            BASS_BFX_COMPRESSOR2 compressor = new BASS_BFX_COMPRESSOR2();
+            BASS_BFX_DAMP compressor = new BASS_BFX_DAMP();
+            BASS_ChannelRemoveFX(currentPlaying, fxcompressorF1);
+            BASS_ChannelRemoveFX(currentPlaying, fxcompressorF2);
             if (state)
             {
                 compressor.Preset_Medium();
-                compressor.fAttack = 1;
-                compressor.fRelease = 800;
-                compressor.fRatio = 6;
-                compressor.fThreshold = -15;
-                compressor.fGain = 12.5f;
-                compressor.Calculate0dBGain();
-                //compressor.fGain += 1.75f;
+                compressor.fGain = 0.5f;
+                compressor.fTarget = 0.5f;
+                compressor.fDelay = 0.25f;
+
+                BASS_BFX_BQF bfxparam = new BASS_BFX_BQF();
+                bfxparam.fBandwidth = 0;
+                bfxparam.fQ = 0f;
+                bfxparam.fS = 0.9f;
+                bfxparam.fCenter = 168;
+                bfxparam.fGain = -14;
+                bfxparam.lFilter = BASSBFXBQF.BASS_BFX_BQF_LOWSHELF;
+                fxcompressorF1 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF, 6);
+                BASS_FXSetParameters(fxcompressorF1, bfxparam);
+                bfxparam.fGain = 14;
+                fxcompressorF2 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF, -6);
+                BASS_FXSetParameters(fxcompressorF2, bfxparam);
             }
             else
             {
-                compressor.fAttack = 20;
-                compressor.fRelease = 200;
-                compressor.fRatio = 1;
-                compressor.fThreshold = 0;
-                compressor.fGain = 0f;
+                compressor.fGain = 1;
             }
-            
+
             Bass.BASS_FXSetParameters(fxcompressor, compressor);
         }
-
         void updateVolume()
         {
             BASS_BFX_DAMP param3 = new BASS_BFX_DAMP();
