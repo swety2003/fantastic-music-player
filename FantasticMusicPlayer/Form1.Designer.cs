@@ -49,7 +49,7 @@
             this.locButtonBlur = new System.Windows.Forms.Label();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.tblBottomControl = new System.Windows.Forms.Panel();
-            this.btnToggleCompressor = new System.Windows.Forms.Button();
+            this.btnAdvSettings = new System.Windows.Forms.Button();
             this.btnPreserved2 = new System.Windows.Forms.Button();
             this.lblProgressManager = new System.Windows.Forms.Panel();
             this.lblTotalTime = new System.Windows.Forms.Label();
@@ -70,6 +70,9 @@
             this.locLyric = new System.Windows.Forms.Label();
             this.btnFav = new System.Windows.Forms.Button();
             this.fntSub = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.动态范围压缩ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.显示桌面歌词ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.locGlowing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.locMask)).BeginInit();
             this.tblBottomControl.SuspendLayout();
@@ -78,6 +81,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgBass)).BeginInit();
             this.tblUtils.SuspendLayout();
             this.tblVolumn.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // numProgress
@@ -318,7 +322,7 @@
             // tblBottomControl
             // 
             this.tblBottomControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.tblBottomControl.Controls.Add(this.btnToggleCompressor);
+            this.tblBottomControl.Controls.Add(this.btnAdvSettings);
             this.tblBottomControl.Controls.Add(this.btnPreserved2);
             this.tblBottomControl.Controls.Add(this.lblProgressManager);
             this.tblBottomControl.Controls.Add(this.lblTotalTime);
@@ -341,21 +345,25 @@
             this.tblBottomControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.tblBottomControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
-            // btnToggleCompressor
+            // btnAdvSettings
             // 
-            this.btnToggleCompressor.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnToggleCompressor.Location = new System.Drawing.Point(137, 54);
-            this.btnToggleCompressor.Name = "btnToggleCompressor";
-            this.btnToggleCompressor.Size = new System.Drawing.Size(35, 35);
-            this.btnToggleCompressor.TabIndex = 7;
-            this.btnToggleCompressor.Text = "button1";
-            this.btnToggleCompressor.UseVisualStyleBackColor = true;
-            this.btnToggleCompressor.Click += new System.EventHandler(this.btnToggleCompressor_Click);
+            this.btnAdvSettings.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAdvSettings.Location = new System.Drawing.Point(638, 54);
+            this.btnAdvSettings.Name = "btnAdvSettings";
+            this.btnAdvSettings.Size = new System.Drawing.Size(35, 35);
+            this.btnAdvSettings.TabIndex = 7;
+            this.btnAdvSettings.Text = "button1";
+            this.btnAdvSettings.UseVisualStyleBackColor = true;
+            this.btnAdvSettings.Click += new System.EventHandler(this.btnAdvSettings_Click);
+            this.btnAdvSettings.MouseDown += new System.Windows.Forms.MouseEventHandler(this.sfxEmphasis);
+            this.btnAdvSettings.MouseEnter += new System.EventHandler(this.sfxAttaker);
+            this.btnAdvSettings.MouseLeave += new System.EventHandler(this.sfxReleaser);
+            this.btnAdvSettings.MouseUp += new System.Windows.Forms.MouseEventHandler(this.sfxDeemphasis);
             // 
             // btnPreserved2
             // 
             this.btnPreserved2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPreserved2.Location = new System.Drawing.Point(96, 54);
+            this.btnPreserved2.Location = new System.Drawing.Point(93, 54);
             this.btnPreserved2.Name = "btnPreserved2";
             this.btnPreserved2.Size = new System.Drawing.Size(35, 35);
             this.btnPreserved2.TabIndex = 0;
@@ -571,7 +579,7 @@
             // btnFav
             // 
             this.btnFav.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnFav.Location = new System.Drawing.Point(643, 7);
+            this.btnFav.Location = new System.Drawing.Point(642, 7);
             this.btnFav.Name = "btnFav";
             this.btnFav.Size = new System.Drawing.Size(40, 40);
             this.btnFav.TabIndex = 5;
@@ -593,6 +601,28 @@
             this.fntSub.TabIndex = 13;
             this.fntSub.Text = "label1";
             this.fntSub.Visible = false;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.动态范围压缩ToolStripMenuItem,
+            this.显示桌面歌词ToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(149, 48);
+            // 
+            // 动态范围压缩ToolStripMenuItem
+            // 
+            this.动态范围压缩ToolStripMenuItem.Name = "动态范围压缩ToolStripMenuItem";
+            this.动态范围压缩ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.动态范围压缩ToolStripMenuItem.Text = "动态范围压缩";
+            this.动态范围压缩ToolStripMenuItem.Click += new System.EventHandler(this.btnToggleCompressor_Click);
+            // 
+            // 显示桌面歌词ToolStripMenuItem
+            // 
+            this.显示桌面歌词ToolStripMenuItem.Name = "显示桌面歌词ToolStripMenuItem";
+            this.显示桌面歌词ToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.显示桌面歌词ToolStripMenuItem.Text = "显示桌面歌词";
+            this.显示桌面歌词ToolStripMenuItem.Click += new System.EventHandler(this.显示桌面歌词ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -637,6 +667,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgBass)).EndInit();
             this.tblUtils.ResumeLayout(false);
             this.tblVolumn.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -684,7 +715,10 @@
         private System.Windows.Forms.Button btnFav;
         private System.Windows.Forms.Label locLyric;
         private System.Windows.Forms.Label fntSub;
-        private System.Windows.Forms.Button btnToggleCompressor;
+        private System.Windows.Forms.Button btnAdvSettings;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 动态范围压缩ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 显示桌面歌词ToolStripMenuItem;
     }
 }
 

@@ -180,7 +180,9 @@ namespace FantasticMusicPlayer
                 controller.Shuffe = Properties.Settings.Default.shuffemode;
                 player.BassBoost = Properties.Settings.Default.bassboost;
                 int dspType = Properties.Settings.Default.dsptype;
-                this.dsptype = dspType;
+
+                this.dsptype = dspType % 10;
+                player.DynamicRangeCompressed = dspType / 10 % 10 > 0;
                 if(dspType == 1)
                 {
                     ((DspSwitcher)player.SurroundSound).WrappedDSP = new SurroundDSP();
@@ -189,7 +191,11 @@ namespace FantasticMusicPlayer
                 {
                     ((DspSwitcher)player.SurroundSound).WrappedDSP = new SpeakerInRoomDSP();
                 }
-                SpectrumMode = Properties.Settings.Default.spectrummode;
+
+                int spectrumMode = Properties.Settings.Default.spectrummode;
+
+                SpectrumMode = spectrumMode % 100;
+                _showDesktopLyrics = ((spectrumMode / 100) % 10) > 0;
                 try
                 {
                     player.LoadFx(Properties.Settings.Default.fxfile);
@@ -202,6 +208,24 @@ namespace FantasticMusicPlayer
             RegisterHotKey(this.Handle, 3, 0, Keys.MediaPlayPause);
             RegisterHotKey(this.Handle, 4, 0, Keys.MediaNextTrack);
             initLyrics();
+        }
+
+
+        private bool _showDesktopLyrics = false;
+        private bool ShowDesktopLyrics
+        {
+            get
+            {
+                return _showDesktopLyrics;
+            }
+            set
+            {
+                _showDesktopLyrics = value;
+                if (lyricLayer != null)
+                {
+                    lyricLayer.Visible = value;
+                }
+            }
         }
 
         void resizeBitmap()
@@ -640,8 +664,7 @@ namespace FantasticMusicPlayer
         {
             Graphics g = spectrumLayer.g;
             g.Clear(Color.Transparent);
-
-
+           
             float[] data = player.Spectrum;
             int len = processedFft.Length;
             if (SpectrumMode != 0)
@@ -743,6 +766,19 @@ namespace FantasticMusicPlayer
                 //}
                 g.DrawLine(fftline3, 0, 64, 768, 64);
             }
+
+            if (BassPlayerImpl.debug)
+            {
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.FillRectangle(Brushes.Transparent, 1, 94, 196, 20);
+                g.CompositingMode = CompositingMode.SourceOver;
+                g.DrawRectangle(Pens.White, 3, 96, 192, 16);
+                g.FillRectangle(white, 3, 96, (player.peakDB + 96f) * 2f, 16f);
+
+                g.DrawString(player.peakDB.ToString("00.0") + " dB", Font, Brushes.Black, 6, 100);
+                g.DrawString(player.peakDB.ToString("00.0") + " dB", Font, Brushes.LightGray, 5, 99);
+            }
+
             spectrumLayer.UpdateWindow();
         }
 
@@ -1167,8 +1203,8 @@ namespace FantasticMusicPlayer
             Properties.Settings.Default.playmode = controller.LoopMode;
             Properties.Settings.Default.shuffemode = controller.Shuffe;
             Properties.Settings.Default.bassboost = player.BassBoost;
-            Properties.Settings.Default.spectrummode = SpectrumMode;
-            Properties.Settings.Default.dsptype = this.dsptype;
+            Properties.Settings.Default.spectrummode = SpectrumMode + (_showDesktopLyrics ? 1 : 0) * 100;
+            Properties.Settings.Default.dsptype = this.dsptype + (player.DynamicRangeCompressed ? 10 : 0);
             Properties.Settings.Default.Save();
             UnregisterHotKey(this.Handle, 2);
             UnregisterHotKey(this.Handle, 3);
@@ -1426,7 +1462,7 @@ namespace FantasticMusicPlayer
                             Properties.Settings.Default.fxfile = fxpath;
                             if (fxpath.ToLower().EndsWith(".wav"))
                             {
-                                Properties.Settings.Default.dsptype = 0;
+                                Properties.Settings.Default.dsptype = 0 + (_this.player.DynamicRangeCompressed ? 10 : 0);
                                 _this.dsptype = 0;
                             }
                             Properties.Settings.Default.Save();
@@ -1622,6 +1658,7 @@ namespace FantasticMusicPlayer
                 }catch (Exception) {
                 }  
             }
+            lyricLayer.Visible = _showDesktopLyrics;
         }
 
         private LyricManager lyricManager = null;
@@ -1638,10 +1675,22 @@ namespace FantasticMusicPlayer
 
         private void btnToggleCompressor_Click(object sender, EventArgs e)
         {
-            player.DynamicRangeCompressed = ! player.DynamicRangeCompressed;
+            player.DynamicRangeCompressed = !player.DynamicRangeCompressed;
         }
 
         private RectangleF lyricRect;
+
+        private void btnAdvSettings_Click(object sender, EventArgs e)
+        {
+            动态范围压缩ToolStripMenuItem.Checked = player.DynamicRangeCompressed;
+            显示桌面歌词ToolStripMenuItem.Checked = ShowDesktopLyrics;
+            contextMenuStrip1.Show(MousePosition);
+        }
+
+        private void 显示桌面歌词ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowDesktopLyrics = !ShowDesktopLyrics;
+        }
 
         private void Form1_Move(object sender, EventArgs e)
         {

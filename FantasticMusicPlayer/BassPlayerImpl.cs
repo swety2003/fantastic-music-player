@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Utils;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,6 +23,15 @@ namespace FantasticMusicPlayer
         private bool disposedValue;
 
         public float[] Spectrum => fft;
+
+        public float peakDB = -96f;
+
+
+#if DEBUG
+        public static bool debug = true;
+#else
+        public static bool debug = false;
+#endif
 
         public long CurrentPosition { get {
                 long result = (long)(BASS_ChannelBytes2Seconds(currentPlaying, BASS_ChannelGetPosition(currentPlaying, BASSMode.BASS_POS_BYTE)) * 1000L);
@@ -73,7 +83,7 @@ namespace FantasticMusicPlayer
             {
                 if (updateTimer == null)
                 {
-                    updateTimer = new BASSTimer(1);
+                    updateTimer = new BASSTimer(16);
                     updateTimer.Tick += UpdateTimer_Tick;
                 }
             }
@@ -100,7 +110,28 @@ namespace FantasticMusicPlayer
                 if (currentPlaying != 0)
                 {
                     BASS_ChannelGetData(currentPlaying, fft, (int)BASSData.BASS_DATA_FFT1024);
-                    
+                    if (debug)
+                    {
+                        var minDB = (float)Decibels.DecibelsToLinear(-96);
+                        var curDB = 0f;
+                        var peakdata = BASS_ChannelGetLevels(currentPlaying);
+                        if (peakdata != null && peakdata.Length > 0)
+                        {
+                            curDB = (float)peakdata.Max();
+                        }
+                        if(curDB < 0) { curDB = -curDB; }
+                        if(curDB < minDB)
+                        {
+                            curDB = minDB;
+                        }
+                        curDB = (float)Decibels.LinearToDecibels(curDB);
+                        peakDB -= 0.4f;
+                        if(peakDB < -96) { peakDB = -96; }
+                        if(peakDB < curDB)
+                        {
+                            peakDB = curDB;
+                        }
+                    }
                 }
 
             }
@@ -248,22 +279,24 @@ namespace FantasticMusicPlayer
             BASS_ChannelRemoveFX(currentPlaying, fxcompressorF2);
             if (state)
             {
-                compressor.Preset_Medium();
-                compressor.fGain = 0.5f;
-                compressor.fTarget = 0.5f;
-                compressor.fDelay = 0.25f;
+                float bassBypass = -8;
+                compressor.fGain = (float)Decibels.DecibelsToLinear(bassBypass - 0.5);
+                compressor.fTarget = (float)Decibels.DecibelsToLinear(bassBypass - 0.5);
+                compressor.fDelay = 0.30f;
+                compressor.fRate = 0.015f;
+                compressor.fQuiet = (float)Decibels.DecibelsToLinear(-42);
 
                 BASS_BFX_BQF bfxparam = new BASS_BFX_BQF();
                 bfxparam.fBandwidth = 0;
                 bfxparam.fQ = 0f;
                 bfxparam.fS = 0.9f;
                 bfxparam.fCenter = 168;
-                bfxparam.fGain = -14;
+                bfxparam.fGain = bassBypass;
                 bfxparam.lFilter = BASSBFXBQF.BASS_BFX_BQF_LOWSHELF;
-                fxcompressorF1 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF, 6);
+                fxcompressorF1 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF,11);
                 BASS_FXSetParameters(fxcompressorF1, bfxparam);
-                bfxparam.fGain = 14;
-                fxcompressorF2 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF, -6);
+                bfxparam.fGain = -bfxparam.fGain;
+                fxcompressorF2 = BASS_ChannelSetFX(currentPlaying, BASSFXType.BASS_FX_BFX_BQF, 9);
                 BASS_FXSetParameters(fxcompressorF2, bfxparam);
             }
             else
