@@ -1,0 +1,28 @@
+﻿<Application x:Class="FantasticMusicPlayer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cts="clr-namespace:FantasticMusicPlayer.Convertors"
+             xmlns:local="clr-namespace:FantasticMusicPlayer">
+    <Application.Resources>
+
+
+        <ResourceDictionary>
+
+
+            <FontFamily x:Key="remixicon" >/Assets/#remixicon</FontFamily>
+
+            <MultiplyValueConvertor x:Key="MultiplyValueConvertor"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+            <TimeToStringConvertor x:Key="TimeToStringConvertor"/>
+            <cts:SongPlayingToBoolConvertor x:Key="SongPlayingToBoolConvertor"/>
+            
+            
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/FantasticMusicPlayer.Shared;component/Styles/IconButton.xaml"/>
+                <ResourceDictionary Source="/FantasticMusicPlayer.Shared;component/Styles/IconToggleButton.xaml"/>
+                <ResourceDictionary Source="/FantasticMusicPlayer.Shared;component/Styles/SimpleWindow.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

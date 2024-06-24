@@ -1,20 +1,20 @@
 # fantastic-music-player
 
 #### 介绍
-界面看起来还不错的音乐播发器, 基于 bass.dll 开发
-获取： https://gitee.com/ZYFDroid/fantastic-music-player/releases/
+界面看起来还不错的音乐播发器, 基于 bass.dll 开发  
+获取： 仍在完善，需自行编译
 
 ![image](images/preview1.png)
 
 #### 软件架构
 
-使用GDI绘制界面，使用Bass.dll作为引擎
+使用WPF绘制界面，使用Bass.dll作为引擎
 
 #### 安装教程
 
-1.  打开发行版页面
-2.  下载最新的exe
-3.  放到一个有音乐的文件夹双击打开
+1.  git clone
+2.  Visual Studio 启动！
+3.  修改 appsettings.json 添加音乐文件夹路径
 
 #### 使用说明
 
@@ -22,7 +22,7 @@
 2.  每个按钮都点点看
 3.  使用很简单的
 
-#### 如何编写音效文件
+#### ~~如何编写音效文件(暂未支持)~~
 
 1.在音乐目录下创建.musicfx文件夹(前面有个点）
 

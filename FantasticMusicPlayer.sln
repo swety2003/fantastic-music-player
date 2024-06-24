@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.9.34622.214
+VisualStudioVersion = 17.9.34407.89
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FantasticMusicPlayer", "FantasticMusicPlayer\FantasticMusicPlayer.csproj", "{88CC422E-E29A-4009-918A-4E93510DBA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasticMusicPlayer", "FantasticMusicPlayer\FantasticMusicPlayer.csproj", "{600B4118-C352-4CF3-A198-FF8DA3696B59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FantasticMusicPlayer.Shared", "FantasticMusicPlayer.Shared\FantasticMusicPlayer.Shared.csproj", "{BCC77E04-5A04-4616-B570-43484420DDCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,18 +15,27 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Debug|Any CPU.Build.0 = Debug|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Debug|x86.ActiveCfg = Debug|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Debug|x86.Build.0 = Debug|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Release|Any CPU.ActiveCfg = Release|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Release|x86.ActiveCfg = Release|x86
-		{88CC422E-E29A-4009-918A-4E93510DBA28}.Release|x86.Build.0 = Release|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Debug|Any CPU.Build.0 = Debug|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Debug|x86.ActiveCfg = Debug|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Debug|x86.Build.0 = Debug|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Release|x86.ActiveCfg = Release|x86
+		{600B4118-C352-4CF3-A198-FF8DA3696B59}.Release|x86.Build.0 = Release|x86
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Debug|x86.ActiveCfg = Debug|x86
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Debug|x86.Build.0 = Debug|x86
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Release|x86.ActiveCfg = Release|x86
+		{BCC77E04-5A04-4616-B570-43484420DDCD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5B3713F3-0B43-4730-A7F1-F7ED8CA430D5}
+		SolutionGuid = {7BCA4E31-88FE-449D-A30C-C248D5A31A6B}
 	EndGlobalSection
 EndGlobal
